@@ -6,6 +6,10 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { config } from './app.firebaseconfig';
 
+import { FriendPipe } from '../pipes/friends';
+import 'hammerjs';
+import 'hammer-timejs';
+
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireModule } from 'angularfire2';
 
@@ -39,6 +43,16 @@ import {Contact, Contacts} from "@ionic-native/contacts";
 import {NewGroupPage} from "../pages/new-group/new-group";
 import {ExistingGroupPage} from "../pages/existing-group/existing-group";
 import {GroupsService} from "../services/groups";
+import { NgCalendarModule  } from 'ionic2-calendar';
+import {EventModalPage} from "../pages/event-modal/event-modal";
+import { Calendar } from '@ionic-native/calendar';
+import {AddmemberPage} from "../pages/addmember/addmember";
+import { ChatProvider } from '../providers/chat/chat';
+import {PersonalchatPage} from "../pages/personalchat/personalchat";
+import { GroupsProvider } from '../providers/groups/groups';
+import {GroupPipe} from "../pipes/groupPipe";
+import {SMS} from "@ionic-native/sms";
+import {SocialSharing} from "@ionic-native/social-sharing";
 
 
 
@@ -60,13 +74,20 @@ import {GroupsService} from "../services/groups";
     SettingsPage,
     PopoverPage,
     ExistingGroupPage,
-    NewGroupPage
+    NewGroupPage,
+    EventModalPage,
+    AddmemberPage,
+    FriendPipe,
+    PersonalchatPage,
+    GroupPipe
+
   ],
   imports: [
+    NgCalendarModule,
     BrowserModule,
     HttpModule,
     IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(config)
+     AngularFireModule.initializeApp(config)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -86,7 +107,10 @@ import {GroupsService} from "../services/groups";
     SettingsPage,
     PopoverPage,
     ExistingGroupPage,
-    NewGroupPage
+    NewGroupPage,
+    EventModalPage,
+    AddmemberPage,
+    PersonalchatPage
   ],
   providers: [
     StatusBar,
@@ -106,7 +130,12 @@ import {GroupsService} from "../services/groups";
     StreamingMedia,
     Contacts,
     Contact,
-    GroupsService
+    GroupsService,
+    Calendar,
+    ChatProvider,
+    GroupsProvider,
+    SMS,
+    SocialSharing
   ]
 })
 export class AppModule {}

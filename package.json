@@ -20,6 +20,7 @@
     "@angular/http": "4.1.3",
     "@angular/platform-browser": "4.1.3",
     "@angular/platform-browser-dynamic": "4.1.3",
+    "@ionic-native/calendar": "^4.1.0",
     "@ionic-native/camera": "^4.0.1",
     "@ionic-native/contacts": "^4.0.1",
     "@ionic-native/core": "3.12.1",
@@ -27,6 +28,8 @@
     "@ionic-native/file-chooser": "^4.0.1",
     "@ionic-native/file-path": "^4.0.1",
     "@ionic-native/image-picker": "^4.0.1",
+    "@ionic-native/sms": "^4.1.0",
+    "@ionic-native/social-sharing": "^4.1.0",
     "@ionic-native/splash-screen": "3.12.1",
     "@ionic-native/status-bar": "3.12.1",
     "@ionic-native/streaming-media": "^4.0.1",
@@ -49,18 +52,26 @@
     "cordova-plugin-statusbar": "^2.2.2",
     "cordova-plugin-streaming-media": "^1.0.2",
     "cordova-plugin-whitelist": "^1.3.1",
+    "cordova-plugin-x-socialsharing": "^5.1.8",
+    "cordova-sms-plugin": "^0.1.11",
+    "es6-promise-plugin": "^4.1.0",
     "firebase": "^4.1.3",
+    "intl": "^1.2.5",
     "ionic-angular": "3.5.3",
     "ionic-plugin-keyboard": "^2.2.1",
+    "ionic2-calendar": "^0.3.7",
     "ionicons": "3.0.0",
+    "moment": "^2.18.1",
     "rxjs": "5.4.0",
     "sw-toolbox": "3.6.0",
+    "video-stitch": "^1.4.0",
     "zone.js": "0.8.12"
   },
   "devDependencies": {
     "@ionic/app-scripts": "2.0.2",
     "@ionic/cli-plugin-cordova": "1.4.1",
     "@ionic/cli-plugin-ionic-angular": "1.3.2",
+    "ionic": "3.6.0",
     "typescript": "2.3.4"
   },
   "description": "An Ionic project",
@@ -87,7 +98,9 @@
       "com.hutchind.cordova.plugins.streamingmedia": {},
       "cordova-plugin-contacts": {
         "CONTACTS_USAGE_DESCRIPTION": " "
-      }
+      },
+      "cordova-sms-plugin": {},
+      "cordova-plugin-x-socialsharing": {}
     },
     "platforms": [
       "android",
