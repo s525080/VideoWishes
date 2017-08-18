@@ -53,6 +53,7 @@ import { GroupsProvider } from '../providers/groups/groups';
 import {GroupPipe} from "../pipes/groupPipe";
 import {SMS} from "@ionic-native/sms";
 import {SocialSharing} from "@ionic-native/social-sharing";
+import {MediaCapture} from "@ionic-native/media-capture";
 
 
 
@@ -135,7 +136,8 @@ import {SocialSharing} from "@ionic-native/social-sharing";
     ChatProvider,
     GroupsProvider,
     SMS,
-    SocialSharing
+    SocialSharing,
+    MediaCapture
   ]
 })
 export class AppModule {}

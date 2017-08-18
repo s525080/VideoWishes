@@ -1,0 +1,145 @@
+<!--
+  Generated template for the LibraryPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="hcolor">
+    <ion-title>Library</ion-title>
+    <ion-buttons end>
+    <button ion-button  icon-only (click)="presentPopover($event)" >
+      <ion-icon name="more"></ion-icon>
+    </button>
+    </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content  >
+  <ion-searchbar
+    [(ngModel)]="myInput"
+    [showCancelButton]="shouldShowCancel"
+    (ionInput)="onInput($event)"
+    (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+  <ion-list class="accordion-list">
+    <!-- First Level -->
+    <ion-list-header *ngFor="let item of library; let i = index"  no-lines no-padding>
+      <ion-item>
+        <ion-list-header no-lines no-padding>
+          <ion-card-title>{{item.name}}</ion-card-title>
+        </ion-list-header>
+
+        <ion-slides  class="image-slider" loop="true" slidesPerView="2">
+          <ion-slide *ngFor="let item of item.children; let k = index">
+            <img src="assets/images/thumb.png" class="thumb-img" />
+          </ion-slide>
+        </ion-slides>
+
+      </ion-item>
+    </ion-list-header>
+  </ion-list>
+
+
+
+
+
+  <!--<ion-list class="accordion-list">-->
+    <!--&lt;!&ndash; First Level &ndash;&gt;-->
+    <!--<ion-list-header *ngFor="let item of library; let i = index"  no-lines no-padding>-->
+      <!--<ion-item>-->
+        <!--<ion-list-header no-lines no-padding>-->
+          <!--<ion-card-title>{{item.name}}</ion-card-title>-->
+        <!--</ion-list-header>-->
+        <!--<ion-row  (click)="toggleSection(i)">-->
+          <!--<ion-col>-->
+            <!--<img src="assets/images/thumb.png">-->
+          <!--</ion-col>-->
+          <!--<ion-col>-->
+            <!--<img src="assets/images/thumb.png">-->
+          <!--</ion-col>-->
+          <!--<ion-col>-->
+            <!--<img src="assets/images/thumb.png">-->
+          <!--</ion-col>-->
+          <!--&lt;!&ndash;<ion-col>&ndash;&gt;-->
+            <!--&lt;!&ndash;<img src="../../assets/images/thumb.png">&ndash;&gt;-->
+          <!--&lt;!&ndash;</ion-col>&ndash;&gt;-->
+        <!--</ion-row>-->
+        <!--&lt;!&ndash;<ion-grid>&ndash;&gt;-->
+        <!--&lt;!&ndash;<ion-row  *ngIf="item.children && item.open" wrap>&ndash;&gt;-->
+          <!--&lt;!&ndash;<ion-col width-33 *ngFor="let item of item.children; let k = index">&ndash;&gt;-->
+            <!--&lt;!&ndash;<img src="assets/images/thumb.png">&ndash;&gt;-->
+          <!--&lt;!&ndash;</ion-col>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;</ion-row></ion-grid>&ndash;&gt;-->
+
+        <!--<ion-slides  *ngIf="item.children && item.open" class="image-slider" loop="true" slidesPerView="2">-->
+          <!--<ion-slide *ngFor="let item of item.children; let k = index">-->
+            <!--<img src="assets/images/thumb.png" class="thumb-img" />-->
+          <!--</ion-slide>-->
+        <!--</ion-slides>-->
+
+        <!--&lt;!&ndash;<ion-list *ngIf="item.children && item.open">&ndash;&gt;-->
+          <!--&lt;!&ndash;&lt;!&ndash; Third Level &ndash;&gt;&ndash;&gt;-->
+          <!--&lt;!&ndash;<ion-item *ngFor="let item of item.children; let k = index" detail-none class="child-item" text-wrap>&ndash;&gt;-->
+            <!--&lt;!&ndash;<h2>{{ item.title }}</h2>&ndash;&gt;-->
+            <!--&lt;!&ndash;<p text-lowercase>{{ item.date }}</p>&ndash;&gt;-->
+            <!--&lt;!&ndash;&lt;!&ndash; Direct Add Button &ndash;&gt;&ndash;&gt;-->
+            <!--&lt;!&ndash;<button ion-button outline item-end (click)="play(item)">Play</button>&ndash;&gt;-->
+            <!--&lt;!&ndash;<button ion-button outline item-end color="secondary"(click)="play(item)">Download</button>&ndash;&gt;-->
+          <!--&lt;!&ndash;</ion-item>&ndash;&gt;-->
+        <!--&lt;!&ndash;</ion-list>&ndash;&gt;-->
+      <!--</ion-item>-->
+    <!--</ion-list-header>-->
+  <!--</ion-list>-->
+
+
+
+
+  <!--<ion-list class="accordion-list">-->
+    <!--&lt;!&ndash; First Level &ndash;&gt;-->
+    <!--<ion-list-header *ngFor="let item of information; let i = index" no-lines no-padding>-->
+      <!--&lt;!&ndash; Toggle Button &ndash;&gt;-->
+      <!--<button ion-item (click)="toggleSection(i)" detail-none [ngClass]="{'section-active': item.open, 'section': !item.open}">-->
+        <!--<ion-icon item-left name="arrow-forward" *ngIf="!item.open"></ion-icon>-->
+        <!--<ion-icon item-left name="arrow-down" *ngIf="item.open"></ion-icon>-->
+        <!--{{ item.name }}-->
+      <!--</button>-->
+
+      <!--<ion-list *ngIf="item.children && item.open" no-lines>-->
+        <!--&lt;!&ndash; Second Level &ndash;&gt;-->
+        <!--<ion-list-header *ngFor="let child of item.children; let j = index" no-padding>-->
+          <!--&lt;!&ndash; Toggle Button &ndash;&gt;-->
+          <!--<button ion-item (click)="toggleItem(i, j)" *ngIf="child.children" class="child" detail-none>-->
+            <!--<ion-icon item-left name="add" *ngIf="!child.open"></ion-icon>-->
+            <!--<ion-icon item-left name="close" *ngIf="child.open"></ion-icon>-->
+            <!--{{ child.name }}-->
+          <!--</button>-->
+
+          <!--&lt;!&ndash; Direct Add Button as Fallback &ndash;&gt;-->
+          <!--<ion-item *ngIf="!child.children" ion-item detail-none class="child-item" text-wrap>-->
+            <!--<h2>{{ child.name }}</h2>-->
+            <!--<p text-lowercase>{{ child.information }}</p>-->
+            <!--<button ion-button outline item-end (click)="buyItem(child)">{{ child.url }}</button>-->
+          <!--</ion-item>-->
+
+          <!--<ion-list *ngIf="child.children && child.open">-->
+            <!--&lt;!&ndash; Third Level &ndash;&gt;-->
+            <!--<ion-item *ngFor="let item of child.children; let k = index" detail-none class="child-item" text-wrap>-->
+              <!--<h2>{{ item.name }}</h2>-->
+              <!--<p text-lowercase>{{ item.information }}</p>-->
+              <!--&lt;!&ndash; Direct Add Button &ndash;&gt;-->
+              <!--<button ion-button outline item-end (click)="play(item)">Play</button>-->
+            <!--</ion-item>-->
+          <!--</ion-list>-->
+
+        <!--</ion-list-header>-->
+      <!--</ion-list>-->
+
+    <!--</ion-list-header>-->
+  <!--</ion-list>-->
+
+</ion-content>

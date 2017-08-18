@@ -1,0 +1,121 @@
+
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{group.value.title}}</ion-title>
+    <!--<button ion-button  icon-only (click)="presentPopover($event)" >-->
+      <!--<ion-icon name="more"></ion-icon>-->
+    <!--</button>-->
+    <!--</ion-buttons>-->
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+
+      <ion-col text-center>
+        <ion-list detail-none >
+          <ion-item>
+            <h2>Event Details</h2>
+            <ion-note>{{group.value.description}}</ion-note>
+          </ion-item>
+          <ion-item>
+            <h2>Event Date</h2>
+            <ion-note>{{group.value.date}}</ion-note>
+          </ion-item>
+          <ion-item>
+            <h2>Event Type</h2>
+            <ion-note>{{group.value.type}}</ion-note>
+          </ion-item>
+        </ion-list>
+
+
+
+
+
+      </ion-col>
+    </ion-row>
+    <ion-row >
+      <ion-col >
+        <ion-label>Members</ion-label>
+        <ion-list >
+          <button ion-item detail-none (click)="onCamera()" block >
+            <ion-icon name="add" item-start></ion-icon>
+            Add New Member
+          </button>
+          <ion-item *ngFor="let newcontact of group.value.contacts">
+            <ion-avatar item-left>
+              <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
+            </ion-avatar>
+            {{newcontact.name._objectInstance.name.formatted}}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row >
+      <ion-col >
+        <ion-label>Recipient</ion-label>
+        <ion-list >
+          <button ion-item detail-none (click)="onCamera()">
+            <ion-icon name="add" item-start></ion-icon>
+            Add New Recipient
+          </button>
+          <ion-item *ngFor="let newcontact of group.value.target">
+            <ion-avatar item-left>
+              <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
+            </ion-avatar>
+            {{newcontact.name._objectInstance.name.formatted}}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row >
+      <ion-col >
+        <ion-label>Uploaded Files</ion-label>
+        <ion-list >
+          <ion-item *ngIf="!group.target">No Files.Please upload photo/video</ion-item>
+          <ion-item *ngFor="let newcontact of group.target">
+            <ion-avatar item-left>
+              <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
+            </ion-avatar>
+            {{newcontact.name.name.formatted}}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <button ion-button icon-start block (click)="openCamera()">
+          <ion-icon name="camera"></ion-icon>
+          Camera
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button icon-start block (click)="sendPicfromLib()">
+          <ion-icon name="images"></ion-icon>
+          Gallery
+        </button>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-row>
+      <ion-col text-center>
+        <button
+          ion-button
+          icon-only
+          (click)="onEditGroup()" color="secondary"><ion-icon name="create"></ion-icon></button>
+        <button
+          ion-button
+          icon-only
+          (click)="onDeleteGroup()" color="danger"><ion-icon name="trash"></ion-icon></button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

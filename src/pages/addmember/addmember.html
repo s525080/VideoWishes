@@ -1,0 +1,40 @@
+<!--
+  Generated template for the AddmemberPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+<ion-navbar>
+
+  <ion-title>Add Members</ion-title>
+  <!-- Only enable button when user is adding atleast one member to the group -->
+  <ion-buttons end>
+    <button ion-button tappable (click)="done()" [disabled]="toAdd && toAdd.length < 1">Done</button>
+  </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list class="avatar-list" *ngIf="contactlist && contactlist.length > 0">
+    <ion-searchbar [(ngModel)]="searchFriend" placeholder="Search for friend or username" showCancelButton="true" cancelButtonText="Done"></ion-searchbar>
+    <ion-item *ngFor="let friend of contactlist" no-lines tappable >
+      <!--<ion-fab middle right>-->
+        <!--<button ion-fab mini tappable (click)="add(friend); $event.stopPropagation();" *ngIf="!isAdded(friend)"><ion-icon name="md-add-circle" class="success"></ion-icon></button>-->
+        <!--<button ion-fab mini tappable (click)="remove(friend); $event.stopPropagation();" *ngIf="isAdded(friend)"><ion-icon name="md-close-circle" class="danger"></ion-icon></button>-->
+      <!--</ion-fab>-->
+      <ion-avatar item-left>
+        <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
+      </ion-avatar>
+
+
+
+      <!--<p *ngFor="let phn of friend.phoneNumbers" >{{phn.value}}</p>-->
+      <ion-checkbox  (ionChange)="updateGroup(friend)"></ion-checkbox>
+      <ion-label>{{friend.name.formatted}}</ion-label>
+    </ion-item>
+
+  </ion-list>
+</ion-content>
