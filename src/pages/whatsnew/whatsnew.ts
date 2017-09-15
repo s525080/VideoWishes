@@ -7,7 +7,6 @@ import {
 import {ChatsPage} from "../chats/chats";
 import {SettingsPage} from "../settings/settings";
 import {ProfilePage} from "../profile/profile";
-import {GroupsService} from "../../services/groups";
 import {Contact, Contacts} from "@ionic-native/contacts";
 import {MetaGroup} from "../../models/interfaces/metagroup";
 import {ExistingGroupPage} from "../existing-group/existing-group";

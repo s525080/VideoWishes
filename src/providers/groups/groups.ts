@@ -82,11 +82,11 @@ export class GroupsProvider {
   }
   getGroups(){
     const userId = this.authService.getActiveUser().uid;
-    const token2 = 'qCIHRi2DetGLAlao4A2K6pgmUynrViC18lrEHRlf';
+    const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
    // console.log("heyy "+token);
     console.log(token2);
     return this.http
-      .get('https://videowishes-acb24.firebaseio.com/'+ userId + '/Groups/GroupsCreated.json?auth='+token2)
+      .get('https://vvish-91286.firebaseio.com/'+ userId + '/Groups/GroupsCreated.json?auth='+token2)
       .map((res: Response) => {
       console.log("response is"+res);
         const chatGroup: MetaGroup[] = res.json() ? res.json() : [];
