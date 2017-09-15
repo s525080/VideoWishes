@@ -6,7 +6,8 @@ import {ProfilePage} from "../profile/profile";
 import {PopoverPage} from "../popover/popover";
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
-import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
+// import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
+
 
 /**
  * Generated class for the LibraryPage page.
@@ -25,11 +26,12 @@ export class LibraryPage {
   myInput:any;
   information: any[];
   constructor(public navCtrl: NavController, public navParams: NavParams,public popoverCtrl: PopoverController,
-              private http: Http,private streamingMedia: StreamingMedia) {
+              private http: Http) {
     let localData = http.get('assets/library.json').map(res => res.json().items);
     localData.subscribe(data => {
       this.library = data;
     })
+
 
     // let localData2 = http.get('assets/information.json').map(res => res.json().items);
     // localData2.subscribe(data => {
@@ -40,11 +42,11 @@ export class LibraryPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad LibraryPage');
   }
-  options: StreamingVideoOptions = {
-  successCallback: () => { console.log('Video played') },
-  errorCallback: (e) => { console.log('Error streaming') },
-  orientation: 'landscape'
-};
+//   options: StreamingVideoOptions = {
+//   successCallback: () => { console.log('Video played') },
+//   errorCallback: (e) => { console.log('Error streaming') },
+//   orientation: 'landscape'
+// };
 
 
   onRowClick(){
@@ -53,11 +55,11 @@ export class LibraryPage {
 
 
   }
-  play(item){
-    console.log("url is"+item.url);
-    this.streamingMedia.playVideo(item.url, this.options);
-
-  }
+  // play(item){
+  //   console.log("url is"+item.url);
+  //   this.streamingMedia.playVideo(item.url, this.options);
+  //
+  // }
 
 
   toggleSection(i) {

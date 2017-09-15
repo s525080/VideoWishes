@@ -1,14 +1,26 @@
-import {Component, NgZone} from '@angular/core';
 import {
-  ActionSheetController, AlertController, LoadingController, NavController, NavParams
+  ActionSheetController, AlertController, LoadingController, NavController, NavParams,ToastController
 } from 'ionic-angular';
 import {UserProvider} from "../../providers/user/user";
 import {ImghandlerProvider} from "../../providers/imghandler/imghandler";
 import firebase from 'firebase';
 import {LoginPage} from "../login/login";
-import {Camera} from "@ionic-native/camera";
+import {Camera,CameraOptions} from "@ionic-native/camera";
 import {FilePath} from "@ionic-native/file-path";
 import { ImagePicker } from '@ionic-native/image-picker';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+import { HTTP } from '@ionic-native/http';
+import { Http ,Headers } from '@angular/http';
+import {Component, NgZone} from "@angular/core";
+
+
+declare var require: any;
+var cloudinary = require('cloudinary');
+// import { Cloudinary } from 'cloudinary-core';
+// //import { Cloudinary } from '@cloudinary/angular';
+// import { CloudinaryModule } from '@cloudinary/angular';
+
 /**
  * Generated class for the ProfilePage page.
  *
@@ -25,16 +37,25 @@ export class ProfilePage {
   avatar: string;
   displayName: string;
   url:any;
-  constructor(public navCtrl: NavController, public navParams: NavParams,
-              public userservice: UserProvider, public zone: NgZone, public alertCtrl: AlertController,
-              public imghandler: ImghandlerProvider,public camera: Camera,public actionSheetCtrl:ActionSheetController,
-              public filePath: FilePath,public imagepicker: ImagePicker,public loadingCtrl:LoadingController) {
-  }
+   //cl = new Cloudinary({cloud_name: "vvish", secure: true});
 
+  constructor(public navCtrl: NavController, public navParams: NavParams,
+              public userservice: UserProvider,public zone: NgZone, public alertCtrl: AlertController,
+              public imghandler: ImghandlerProvider,public camera: Camera,public actionSheetCtrl:ActionSheetController,
+              public filePath: FilePath,public imagepicker: ImagePicker,public loadingCtrl:LoadingController,
+              private transfer: FileTransfer, private file: File, private http:Http,private httpUrl:HTTP,public toastCtrl: ToastController) {
+
+  }
   ionViewWillEnter() {
+
+
     console.log('ion view will enter');
 
+
+
     this.loaduserdetails();
+
+    //var cl = new cloudinary.Cloudinary({cloud_name: "demo", secure: true});
   }
 
   loaduserdetails() {
@@ -61,6 +82,37 @@ export class ProfilePage {
 
   editimage() {
 
+    const base_url ='https://api.cloudinary.com/v1_1/vvish/image/upload';
+    const image_url = '';
+    //let body = { "file": "http://www.juliebergan.no/sites/g/files/g2000006326/f/sample_03.jpg", "upload_preset": "oaggw9ot" };
+    var headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    // this.http.post(base_url,
+    //   JSON.stringify(body),
+    //   {headers:headers})
+    //   .subscribe((res) =>
+    //   {
+    //     console.log('hey success');
+    //     console.log(res.json());
+    //       let alert = this.alertCtrl.create({
+    //         title: 'success!',
+    //         subTitle: JSON.stringify(res),
+    //         buttons: ['OK']
+    //       });
+    //       alert.present();
+    //   }),(err) =>
+    //   {
+    //     let alert = this.alertCtrl.create({
+    //       title: 'failed!',
+    //       subTitle: JSON.stringify(err),
+    //       buttons: ['OK']
+    //     });
+    //     alert.present();
+    //   };
+    //
+
+
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Select Image Source',
       buttons: [
@@ -70,7 +122,7 @@ export class ProfilePage {
 
             this.camera.getPicture({
               sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
-              destinationType: this.camera.DestinationType.DATA_URL
+              destinationType: this.camera.DestinationType.FILE_URI
             }).then((imageData) => {
               this.avatar = 'data:image/jpeg;base64,'+imageData;
               this.url = this.avatar;
@@ -78,7 +130,6 @@ export class ProfilePage {
               // Create a timestamp as filename
               const filename = Math.floor(Date.now() / 1000);
 
-              // Create a reference to 'images/todays-date.jpg'
 
               const imageRef = storageRef.child(firebase.auth().currentUser.uid);
 
@@ -129,17 +180,18 @@ export class ProfilePage {
            // this.takePicture(this.camera.PictureSourceType.CAMERA);
             this.camera.getPicture({
               sourceType: this.camera.PictureSourceType.CAMERA,
-              destinationType: this.camera.DestinationType.DATA_URL
+              destinationType: this.camera.DestinationType.NATIVE_URI,
             }).then((imageData) => {
-              this.avatar = 'data:image/jpeg;base64,'+imageData;
+              this.avatar = "data:image/jpeg;base64,"+imageData;
+
               this.url = this.avatar;
               let storageRef = firebase.storage().ref('/images');
               // Create a timestamp as filename
               const filename = Math.floor(Date.now() / 1000);
 
-              // Create a reference to 'images/todays-date.jpg'
 
               const imageRef = storageRef.child(firebase.auth().currentUser.uid);
+
 
 
               imageRef.putString(this.url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {

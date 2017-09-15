@@ -16,7 +16,7 @@ import { AngularFireModule } from 'angularfire2';
 import { MyApp } from './app.component';
 import { AuthProvider } from '../providers/auth/auth';
 import {LoginPage} from "../pages/login/login";
-import { HttpModule } from '@angular/http';
+import {Http, HttpModule} from '@angular/http';
 import {TabsPage} from "../pages/tabs/tabs";
 import {ChatsPage} from "../pages/chats/chats";
 import {ProfilePage} from "../pages/profile/profile";
@@ -38,7 +38,7 @@ import {WhatsnewPage} from "../pages/whatsnew/whatsnew";
 import {WhatshappeningPage} from "../pages/whatshappening/whatshappening";
 import {SettingsPage} from "../pages/settings/settings";
 import {PopoverPage} from "../pages/popover/popover";
-import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
+// import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
 import {Contact, Contacts} from "@ionic-native/contacts";
 import {NewGroupPage} from "../pages/new-group/new-group";
 import {ExistingGroupPage} from "../pages/existing-group/existing-group";
@@ -54,7 +54,10 @@ import {GroupPipe} from "../pipes/groupPipe";
 import {SMS} from "@ionic-native/sms";
 import {SocialSharing} from "@ionic-native/social-sharing";
 import {MediaCapture} from "@ionic-native/media-capture";
-
+import {FileTransfer} from "@ionic-native/file-transfer";
+import {HTTP} from "@ionic-native/http";
+import { CloudinaryModule, CloudinaryConfiguration } from '@cloudinary/angular';
+import { Cloudinary } from 'cloudinary-core';
 
 
 @NgModule({
@@ -87,6 +90,12 @@ import {MediaCapture} from "@ionic-native/media-capture";
     NgCalendarModule,
     BrowserModule,
     HttpModule,
+    CloudinaryModule.forRoot({Cloudinary},
+      {cloud_name: 'vvish',
+        api_key: '374669333581162',
+        api_secret: 'OtnDc_BxUicqXpTJdpNNW4nGSkU',
+        enhance_image_tag: true,
+        static_image_support: false} as CloudinaryConfiguration),
     IonicModule.forRoot(MyApp),
      AngularFireModule.initializeApp(config)
   ],
@@ -128,7 +137,6 @@ import {MediaCapture} from "@ionic-native/media-capture";
     RequestsProvider,
     Camera,
     ImagePicker,
-    StreamingMedia,
     Contacts,
     Contact,
     GroupsService,
@@ -137,7 +145,10 @@ import {MediaCapture} from "@ionic-native/media-capture";
     GroupsProvider,
     SMS,
     SocialSharing,
-    MediaCapture
+    MediaCapture,
+    FileTransfer,
+    HTTP,
+    CloudinaryModule
   ]
 })
 export class AppModule {}

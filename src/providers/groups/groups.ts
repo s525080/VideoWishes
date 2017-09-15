@@ -37,9 +37,9 @@ export class GroupsProvider {
       //this.sms.send(member.name._objectInstance.phoneNumbers.value);
     }
 
-    const token2 = 'qCIHRi2DetGLAlao4A2K6pgmUynrViC18lrEHRlf';
+    const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
     return this.http
-      .post('https://videowishes-acb24.firebaseio.com/'+ userId + '/Groups/GroupsCreated.json?auth='+token2,this.metaGroup)
+      .post('https://vvish-91286.firebaseio.com/'+ userId + '/Groups/GroupsCreated.json?auth='+token2,this.metaGroup)
       .map((res: Response) => {
         return res.json();
       })

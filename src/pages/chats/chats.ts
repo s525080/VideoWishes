@@ -37,13 +37,17 @@ export class ChatsPage {
     this.events.subscribe('gotrequests', () => {
       this.myrequests = [];
       this.myrequests = this.requestservice.userdetails;
-      loader.dismiss();
+
     })
+
+
     this.events.subscribe('friends', () => {
       this.myfriends = [];
       this.myfriends = this.requestservice.myfriends;
-      loader.dismiss();
+      //loader.dismiss();
     })
+    loader.dismiss();
+
   }
 
   ionViewDidLeave() {

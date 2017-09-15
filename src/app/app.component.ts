@@ -20,14 +20,30 @@ export class MyApp {
   pages: Array<{title: string, component: any}>;
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
 
-     firebase.initializeApp({
-       apiKey: "AIzaSyDn55Z3qS79NeL-lzzzMNXxEFLpj0Xss-Y",
-       authDomain: "videowishes-acb24.firebaseapp.com",
-       databaseURL: "https://videowishes-acb24.firebaseio.com",
-       projectId: "videowishes-acb24",
-       storageBucket: "videowishes-acb24.appspot.com",
-       messagingSenderId: "1097310977315"
-     });
+     // firebase.initializeApp({
+     //   apiKey: "AIzaSyDn55Z3qS79NeL-lzzzMNXxEFLpj0Xss-Y",
+     //   authDomain: "videowishes-acb24.firebaseapp.com",
+     //   databaseURL: "https://videowishes-acb24.firebaseio.com",
+     //   projectId: "videowishes-acb24",
+     //   storageBucket: "videowishes-acb24.appspot.com",
+     //   messagingSenderId: "1097310977315"
+     // });
+
+
+
+
+
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyBR6YAg73tcHZw8t7FI4qJYl5eT6IvL2gM",
+      authDomain: "vvish-91286.firebaseapp.com",
+      databaseURL: "https://vvish-91286.firebaseio.com",
+      projectId: "vvish-91286",
+      storageBucket: "vvish-91286.appspot.com",
+      messagingSenderId: "186763057808"
+    };
+
+     firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(user => {
 if(user){
   this.isAuthenticated = true;

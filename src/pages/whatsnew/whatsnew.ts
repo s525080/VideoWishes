@@ -69,7 +69,7 @@ export class WhatsnewPage implements OnInit{
     this.chatGroupForm = new FormGroup({
       'title' : new FormControl(null,Validators.required),
       'description' : new FormControl(null,Validators.required),
-      'type' : new FormControl('Birthday',Validators.required),
+      'type' : new FormControl('Birthday'),
       'myDate' : new FormControl(null),
       'fromDate' : new FormControl(null),
       'toDate' : new FormControl(null),
