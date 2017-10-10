@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {AlertController, NavController, NavParams} from 'ionic-angular';
+import {WhatsnewPage} from "../whatsnew/whatsnew";
 
 /**
  * Generated class for the AddmemberPage page.
@@ -43,4 +44,8 @@ export class AddmemberPage {
     this.newGroupList.push(friend);
   }
 
+  done(){
+    let finalList = this.newGroupList;
+    this.navCtrl.push(WhatsnewPage,{finalList});
+  }
 }

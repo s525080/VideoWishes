@@ -149,4 +149,6 @@ export class ImghandlerProvider {
     return promise;
   }
 
+
+
 }

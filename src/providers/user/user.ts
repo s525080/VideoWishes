@@ -24,6 +24,8 @@ export class UserProvider {
           this.firedata.child(this.afireauth.auth.currentUser.uid).set({
             uid: this.afireauth.auth.currentUser.uid,
             displayName: newuser.displayName,
+            code:newuser.code,
+            tel: newuser.tel,
             photoURL: 'give a dummy placeholder url here'
           }).then(() => {
             resolve({ success: true });
@@ -113,9 +115,29 @@ export class UserProvider {
         let userdata = snapshot.val();
         let temparr = [];
         for (var key in userdata) {
+          console.log(key);
           temparr.push(userdata[key]);
         }
         resolve(temparr);
+      }).catch((err) => {
+        reject(err);
+      })
+    })
+    return promise;
+  }
+
+  getallusersPhone() {
+    var promise = new Promise((resolve, reject) => {
+      this.firedata.once('value', (snapshot) => {
+        let userdata = snapshot.val();
+        console.log(userdata);
+         let temparr = [];
+        for (let user in userdata) {
+         // console.log(user);
+          temparr.push(userdata[user].displayName);
+        }
+        console.log('temp array is' +temparr);
+        resolve(userdata);
       }).catch((err) => {
         reject(err);
       })

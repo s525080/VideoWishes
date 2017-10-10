@@ -42,7 +42,7 @@
       <ion-col >
         <ion-label>Members</ion-label>
         <ion-list >
-          <button ion-item detail-none (click)="onCamera()" block >
+          <button ion-item detail-none *ngIf="group.value.owner == currentUser"(click)="onCamera()" block >
             <ion-icon name="add" item-start></ion-icon>
             Add New Member
           </button>
@@ -50,7 +50,8 @@
             <ion-avatar item-left>
               <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
             </ion-avatar>
-            {{newcontact.name._objectInstance.name.formatted}}
+            <!--{{newcontact.name._objectInstance.name.formatted}}-->
+            {{newcontact.displayName}}
           </ion-item>
         </ion-list>
       </ion-col>
@@ -59,7 +60,7 @@
       <ion-col >
         <ion-label>Recipient</ion-label>
         <ion-list >
-          <button ion-item detail-none (click)="onCamera()">
+          <button ion-item detail-none *ngIf="group.value.owner   == currentUser" (click)="onCamera()">
             <ion-icon name="add" item-start></ion-icon>
             Add New Recipient
           </button>
@@ -67,7 +68,8 @@
             <ion-avatar item-left>
               <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
             </ion-avatar>
-            {{newcontact.name._objectInstance.name.formatted}}
+            <!--{{newcontact.name._objectInstance.name.formatted}}-->
+            {{newcontact.displayName}}
           </ion-item>
         </ion-list>
       </ion-col>
@@ -75,14 +77,41 @@
 
     <ion-row >
       <ion-col >
+        <ion-label>Photo</ion-label>
+        <ion-list >
+          <ion-item >
+            <ion-avatar *ngIf="this.group.value.photoUrl == ''" item-left>
+              <img  src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
+            </ion-avatar>
+            <ion-avatar   item-left>
+              <img id ="camera-image">
+            </ion-avatar>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col >
+        <ion-label>Video</ion-label>
+        <ion-list >
+          <ion-item >
+            <ion-avatar item-left>
+              <img src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
+              <img id ="lib-video">
+            </ion-avatar>
+
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="group.value.owner == currentUser">
+      <ion-col >
         <ion-label>Uploaded Files</ion-label>
         <ion-list >
-          <ion-item *ngIf="!group.target">No Files.Please upload photo/video</ion-item>
-          <ion-item *ngFor="let newcontact of group.target">
+          <ion-item *ngIf="group.value.mediaFiles.length<=1">No Files.Please upload photo/video</ion-item>
+          <ion-item *ngFor="let file of medialist">
             <ion-avatar item-left>
-              <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
+              <img src= {{file}}>
             </ion-avatar>
-            {{newcontact.name.name.formatted}}
           </ion-item>
         </ion-list>
       </ion-col>
@@ -90,15 +119,15 @@
 
     <ion-row>
       <ion-col>
-        <button ion-button icon-start block (click)="openCamera()">
+        <button ion-button icon-start block (click)="photoUpload()">
           <ion-icon name="camera"></ion-icon>
-          Camera
+          Upload Photo
         </button>
       </ion-col>
       <ion-col>
-        <button ion-button icon-start block (click)="sendPicfromLib()">
+        <button ion-button icon-start block (click)="videoUpload()">
           <ion-icon name="images"></ion-icon>
-          Gallery
+          Upload video
         </button>
       </ion-col>
     </ion-row>

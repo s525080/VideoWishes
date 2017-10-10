@@ -58,14 +58,15 @@
       </ion-item>
     </ion-list>
     <button type="button" clear ion-button block (click)="onAddMembers()" >Add Members</button>
-    <button type="button" clear ion-button block (click)="onAddNewMembers()" >Add Members</button>
+    <!--<button type="button" clear ion-button block (click)="onAddNewMembers()" >Add Members</button>-->
     <ion-list formArrayName="members">
       <ion-item *ngFor="let memControl of chatGroupForm.get('members').controls; let i = index">
         <ion-avatar item-left>
           <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
         </ion-avatar>
         <!--<h2 >{{memControl.value.name.formatted}}</h2>-->
-        <ion-label (click)="onEditMembers(i)" >{{memControl.value.name.formatted}}</ion-label>
+        <ion-label (click)="onEditMembers(i)" >{{memControl.value.displayName}}</ion-label>
+
 
       </ion-item>
     </ion-list>
@@ -77,7 +78,7 @@
           <img src="https://lh3.googleusercontent.com/H9yAIsZYqbIOh_E1ON90chVhO6SYSD6ucV-XirZXkMFDqLRjGoztobaxx1XS9CB4lfg=w300">
         </ion-avatar>
         <!--<h2 >{{memControl.value.name.formatted}}</h2>-->
-        <ion-label (click)="onEditTarget(i)" >{{memControl.value.name.formatted}}</ion-label>
+        <ion-label (click)="onEditTarget(i)" >{{memControl.value.displayName}}</ion-label>
 
       </ion-item>
     </ion-list>

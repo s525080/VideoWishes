@@ -17,6 +17,8 @@ import {AuthProvider} from "../../providers/auth/auth";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AddmemberPage} from "../addmember/addmember";
 import {WhatshappeningPage} from "../whatshappening/whatshappening";
+import firebase from 'firebase';
+import {UserProvider} from "../../providers/user/user";
 
 /**
  * Generated class for the WhatsnewPage page.
@@ -32,7 +34,7 @@ import {WhatshappeningPage} from "../whatshappening/whatshappening";
 export class WhatsnewPage implements OnInit{
 
   mode = 'New';
-  selectOptions = ['Picnic','Birthday','Anniversary', 'Graduation'];
+  selectOptions = ['select','Picnic','Birthday','Anniversary', 'Graduation'];
   chatGroupForm : FormGroup;
   grpMembers: string;
   myDate: string;
@@ -49,7 +51,8 @@ export class WhatsnewPage implements OnInit{
               private groupService: GroupsProvider,
               private actionController: ActionSheetController, private alertCtrl : AlertController,
               private contacts: Contacts,private cnt: Contact, public platform: Platform,
-              public authService : AuthProvider,public popoverCtrl: PopoverController) {
+              public authService : AuthProvider,public popoverCtrl: PopoverController,
+              private userService:UserProvider) {
 
 
 
@@ -68,7 +71,7 @@ export class WhatsnewPage implements OnInit{
     this.chatGroupForm = new FormGroup({
       'title' : new FormControl(null,Validators.required),
       'description' : new FormControl(null,Validators.required),
-      'type' : new FormControl('Birthday'),
+      'type' : new FormControl('select',Validators.required),
       'myDate' : new FormControl(null),
       'fromDate' : new FormControl(null),
       'toDate' : new FormControl(null),
@@ -82,24 +85,35 @@ export class WhatsnewPage implements OnInit{
 
   onSubmit(){
     console.log(this.chatGroupForm);
-    const value = this.chatGroupForm.value;
-    let members = [];
-    let target = [];
-    if(value.members.length > 0){
-      members = value.members.map(name => {
-        return { name: name , contactNumber : 1 }
-      })
+    var value = this.chatGroupForm.value;
+    let groupUniqueKey = Math.floor(Math.random()*8+1)+Math.random().toString().slice(2,10);
 
-    }
-
-    if(value.target.length > 0){
-      target = value.target.map(name => {
-        return { name: name , contactNumber : 1 }
-      })
-    }
+    let media:string[] =[];
+    value['photoUrl'] = '';
+    value['videoUrl'] ='';
+    value['mediaFiles']= [''];
+    value['finalVideo'] = '';
+    value['groupMatchKey'] =groupUniqueKey;
+    // let members = [];
+    // let target = [];
+    // if(value.members.length > 0){
+    //   members = value.members.map(name => {
+    //     return { name: name , contactNumber : 1 }
+    //   })
+    //
+    // }
+    //
+    // if(value.target.length > 0){
+    //   target = value.target.map(name => {
+    //     return { name: name , contactNumber : 1 }
+    //   })
+    // }
 
     const creator:any = this.authService.getActiveUser().displayName;
-    this.groupService.addGroup(creator,value.title,value.description,value.type,value.myDate,value.fromDate,value.toDate,members,target)
+    const owner:any = firebase.auth().currentUser.uid;
+    console.log("type is"+value.type);
+    this.groupService.addGroup(owner,creator,value.title,value.description,value.type,value.myDate,value.fromDate,value.toDate,value.members,value.target,
+    value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey)
       .subscribe(
         () => {
 
@@ -115,7 +129,7 @@ export class WhatsnewPage implements OnInit{
     this.navCtrl.setRoot(WhatshappeningPage);
 
     var t: Tabs = this.navCtrl.parent;
-    t.select(2);
+    t.select(3);
    // this.groupService.sendSms();
   }
 
@@ -136,6 +150,21 @@ export class WhatsnewPage implements OnInit{
       let finalContacts = this.contactlist;
       this.navCtrl.push(AddmemberPage,{finalContacts});
 
+        let finalList = this.navParams.get('finalList');
+      for(let mem in finalList){
+        (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(mem));
+        const newContactAlert = this.alertCtrl.create({
+          title: 'contact',
+          message : mem,
+          buttons : [
+            {
+              text : ' Cancel',
+              role : 'cancel'
+            }
+          ]
+        })
+       // newContactAlert.present();
+      }
     }, (error) => {
       console.log(error);
     })
@@ -146,11 +175,19 @@ export class WhatsnewPage implements OnInit{
     this.contacts.pickContact().then(
       cnt => {
         console.log('contact is:'+cnt.displayName);
-        (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(cnt));
+        console.log('contact is:'+cnt.phoneNumbers[0].value);
+        let contactInfo:any = {
+          'uid':'',
+          'tel':cnt.phoneNumbers[0].value,
+          'displayName':cnt.name.formatted,
+          'photoURL':''
+        };
+
+        (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(contactInfo));
         console.log(this.chatGroupForm.get('members'));
         const newContactAlert = this.alertCtrl.create({
           title: 'contact',
-          message : cnt.displayName,
+          message : JSON.stringify(contactInfo),
           buttons : [
             {
               text : ' Cancel',
@@ -158,7 +195,7 @@ export class WhatsnewPage implements OnInit{
             }
           ]
         })
-        // newContactAlert.present();
+         newContactAlert.present();
       }
     ).catch(error => {
 
@@ -171,7 +208,13 @@ export class WhatsnewPage implements OnInit{
 
     this.contacts.pickContact().then(
       cnt => {
-        (<FormArray>this.chatGroupForm.get('target')).push(new FormControl(cnt));
+        let contactInfo:any = {
+          'uid':'',
+          'tel':cnt.phoneNumbers[0].value,
+          'displayName':cnt.name.formatted,
+          'photoURL':''
+        };
+        (<FormArray>this.chatGroupForm.get('target')).push(new FormControl(contactInfo));
 
 
       }
