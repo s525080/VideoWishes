@@ -20,26 +20,29 @@
       <ion-card-header>
         Login
       </ion-card-header>
-      <ion-card-content class="card-content">
-        <ion-list no-lines>
-          <div class="spacer" style="height: 10px;"></div>
+      <ion-card-content >
+        <form [formGroup]="LoginForm" (ngSubmit)="onSubmit()">
+        <ion-list >
+          <!--<div class="spacer" style="height: 10px;"></div>-->
           <ion-item>
-            <ion-input type="email" placeholder="Email" [(ngModel)]="credentials.email"></ion-input>
+            <ion-input type="email" placeholder="Email" formControlName="email"></ion-input>
 
           </ion-item>
-          <div class="spacer" style="height: 5px;"></div>
+          <!--<div class="spacer" style="height: 5px;"></div>-->
           <ion-item>
-            <ion-input type="password" placeholder="Password" [(ngModel)]="credentials.password"></ion-input>
+            <ion-input type="password" placeholder="Password" formControlName="password"></ion-input>
           </ion-item>
-          <div class="spacer" style="height: 10px;"></div>
+          <!--<div class="spacer" style="height: 10px;"></div>-->
           <a (click)="passwordreset()">Forgot login details ? <b> Get Help </b></a>
-          <div class="spacer" style="height: 10px;"></div>
-          <button ion-button block round outline color="light" (click)="signin()">Login</button>
-          <div class="spacer" style="height: 10px;"></div>
+          <!--<div class="spacer" style="height: 10px;"></div>-->
+          <button ion-button block round outline color="light" type="submit" >Login</button>
+          <!--<div class="spacer" style="height: 10px;"></div>-->
           <p>OR</p>
-          <div class="spacer" style="height: 10px;"></div>
-          <button ion-button clear full color="light" (click)="signup()">Don't have an account? Sign up</button>
+          <!--<div class="spacer" style="height: 10px;"></div>-->
+
         </ion-list>
+        </form>
+        <button ion-button clear full color="light" (click)="signup()">Don't have an account? Sign up</button>
       </ion-card-content>
     </ion-card>
 

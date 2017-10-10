@@ -58,6 +58,9 @@ import {FileTransfer} from "@ionic-native/file-transfer";
 import {HTTP} from "@ionic-native/http";
 import { CloudinaryModule, CloudinaryConfiguration } from '@cloudinary/angular';
 import { Cloudinary } from 'cloudinary-core';
+import {PhotoViewer} from "@ionic-native/photo-viewer";
+import {VideoPlayer} from "@ionic-native/video-player";
+import {VideoEditor} from "@ionic-native/video-editor";
 
 
 @NgModule({
@@ -148,7 +151,10 @@ import { Cloudinary } from 'cloudinary-core';
     MediaCapture,
     FileTransfer,
     HTTP,
-    CloudinaryModule
+    CloudinaryModule,
+    PhotoViewer,
+    VideoPlayer,
+    VideoEditor
   ]
 })
 export class AppModule {}

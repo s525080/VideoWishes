@@ -226,10 +226,10 @@ export class GroupsProvider {
     // media.push(photoUrl);
     // media.push(videoUrl);
 
-    if(photoUrl!=''){
+    if(photoUrl!='' ){
       mediaFiles.push(photoUrl);
     }
-    if(videoUrl!=''){
+    if(videoUrl!='' ){
       mediaFiles.push(videoUrl);
     }
     //mediaFiles.push(photoUrl);
@@ -237,12 +237,12 @@ export class GroupsProvider {
       'mediaFiles':mediaFiles,
     }
 
-    let alert4 = this.alertCtrl.create({
-      title: 'owner body is',
-      subTitle: 'photo url is'+JSON.stringify(ownerBody),
-      buttons: ['OK']
-    });
-    alert4.present();
+    // let alert4 = this.alertCtrl.create({
+    //   title: 'owner body is',
+    //   subTitle: 'photo url is'+JSON.stringify(ownerBody),
+    //   buttons: ['OK']
+    // });
+    // alert4.present();
 
     return this.http
       .patch('https://vvish-91286.firebaseio.com/Groups/'+ currentUser + '/GroupsCreated/'+groupId+'.json?auth='+token2,body)

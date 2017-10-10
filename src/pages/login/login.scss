@@ -3,13 +3,13 @@ page-login {
     //background-image: url('../../assets/images/bgm.jpg');
     //background-color: #000000;
   }
-  .scroll-content {
-    align-content: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-  }
+  //.scroll-content {
+  //  align-content: center;
+  //  display: flex;
+  //  flex-direction: column;
+  //  justify-content: center;
+  //  text-align: center;
+  //}
   .card-content {
     align-content: center;
     display: flex;
@@ -25,6 +25,7 @@ page-login {
   a, p,
   ion-card-header.card-header {
     color: #fff!important;
+    align-content: center;
   }
 
   .list > .item-block:first-child {

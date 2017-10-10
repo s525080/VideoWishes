@@ -83,8 +83,11 @@
             <ion-avatar *ngIf="this.group.value.photoUrl == ''" item-left>
               <img  src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
             </ion-avatar>
+            <!--<ion-avatar   item-left>-->
+              <!--<img id ="camera-image" >-->
+            <!--</ion-avatar>-->
             <ion-avatar   item-left>
-              <img id ="camera-image">
+              <img src={{this.group.value.photoUrl}} (click)="onphotoClick(this.group.value.photoUrl)">
             </ion-avatar>
           </ion-item>
         </ion-list>
@@ -93,9 +96,14 @@
         <ion-label>Video</ion-label>
         <ion-list >
           <ion-item >
+            <ion-avatar *ngIf="this.group.value.videoUrl == ''" item-left>
+              <img  src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
+            </ion-avatar>
+            <!--<ion-avatar item-left>-->
+              <!--<img src={{this.group.value.videoUrl}} (click)="onvideoClick(this.group.value.videoUrl)">-->
+            <!--</ion-avatar>-->
             <ion-avatar item-left>
-              <img src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
-              <img id ="lib-video">
+              <img src="assets/images/video_thumbnail.PNG" (click)="onvideoClick(this.group.value.videoUrl)">
             </ion-avatar>
 
           </ion-item>

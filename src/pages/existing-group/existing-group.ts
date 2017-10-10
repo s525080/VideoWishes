@@ -16,6 +16,9 @@ import {GroupsProvider} from "../../providers/groups/groups";
 import { Http,Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { VideoPlayer } from '@ionic-native/video-player';
+import { VideoEditor } from '@ionic-native/video-editor';
 
 
 /**
@@ -39,11 +42,13 @@ export class ExistingGroupPage implements OnInit{
   owner:any;
   currentUser:any;
   nativepath:any;
+  thumbnail:any;
   medialist:string[]=[];
   constructor(public navCtrl: NavController, public navParams: NavParams,public loadingCtrl:LoadingController,
               public camera:Camera,private mediaCapture: MediaCapture,public alertCtrl:AlertController,
               public actionSheetCtrl: ActionSheetController,public filechooser: FileChooser,public http:Http,
-              public userservice: UserProvider,public file:File,public groupservice:GroupsProvider) {
+              public userservice: UserProvider,public file:File,public groupservice:GroupsProvider,
+              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer,private videoEditor: VideoEditor) {
 
 this.currentUser = firebase.auth().currentUser.uid;
 console.log("user is"+this.currentUser);
@@ -55,6 +60,7 @@ console.log("user is"+this.currentUser);
     this.group = this.navParams.get('member');
     this.currentUser = firebase.auth().currentUser.uid;
     this.groupId = this.group.key;
+    // this.getthumbnail(this.group.value.videoUrl);
     console.log("this group is"+this.group.key);
     // this.index = this.navParams.get('index');
     this.loadmedia();
@@ -62,10 +68,41 @@ console.log("user is"+this.currentUser);
   console.log('num is'+num);
   }
 
+  getthumbnail(url:string){
+    let options = {
+      'fileUri':url,
+      'outputFileName':'video Thumbnail'
+    }
+    this.videoEditor.createThumbnail(options).then((res:any) => {
+      console.log('res is '+res);
+      let alertnew = this.alertCtrl.create({
+        title: 'Response is!',
+        subTitle: res,
+        buttons: ['OK']
+      });
+
+      alertnew.present();
+      this.thumbnail = res;
+    }).catch((err:any)=> {
+      console.log('Error in creating thumbnail'+err);
+    });
+
+  }
+  onphotoClick(src:string){
+    this.photoViewer.show(src);
+  }
+  onvideoClick(src:string){
+    this.videoPlayer.play(src).then(() => {
+      console.log('video completed');
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
   loadmedia(){
 
       let cameraImageSelector = document.getElementById('camera-image');
-      cameraImageSelector.setAttribute('src', this.group.value.photoUrl);
+      //cameraImageSelector.setAttribute('src', this.group.value.photoUrl);
 
 
     let mediaSelector = document.getElementById('media-file');
@@ -153,12 +190,12 @@ console.log("user is"+this.currentUser);
 
 
         this.file.resolveLocalFilesystemUrl("file://"+fileUri).then((fileEntry:any) => {
-          let alert6 = this.alertCtrl.create({
-            title: 'File entry is',
-            subTitle: fileUri,
-            buttons: ['OK']
-          });
-          alert6.present();
+          // let alert6 = this.alertCtrl.create({
+          //   title: 'File entry is',
+          //   subTitle: fileUri,
+          //   buttons: ['OK']
+          // });
+          // alert6.present();
           console.log('Type: ' + (typeof fileEntry));
           fileEntry.file( (file) => {
             console.log('File: ' + (typeof file) + ', ' + JSON.stringify(file));
@@ -185,9 +222,9 @@ console.log("user is"+this.currentUser);
               const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId);
               //let metadata =  {type: 'video/mp4'};
               if((fileURL.indexOf(".jpg") != -1)|| (fileURL.indexOf(".JPG") != -1) || (fileURL.indexOf(".png") != -1) || (fileURL.indexOf(".PNG") != -1)){
-                var metadata =  {type: 'image/jpg'};
+                var metadata =  {'contentType': 'image/jpg'};
               }else {
-                var metadata = {type:'video/mp4'};
+                var metadata = {'contentType':'video/mp4'};
               }
               let alert10 = this.alertCtrl.create({
                 title: 'meta data is!',
@@ -294,8 +331,8 @@ console.log("user is"+this.currentUser);
                   loader.dismiss();
 
                   let cameraImageSelector = document.getElementById('camera-image');
-
-                  cameraImageSelector.setAttribute('src', url);
+                  this.group.value.photoUrl = url;
+               //   cameraImageSelector.setAttribute('src', url);
                   //   .then((res:any) => {
                   //
                   //       let alert = this.alertCtrl.create({
@@ -393,8 +430,8 @@ console.log("user is"+this.currentUser);
                   })
                   loader.dismiss();
                   let cameraImageSelector = document.getElementById('camera-image');
-
-                  cameraImageSelector.setAttribute('src', url);
+                  this.group.value.photoUrl = url;
+                //  cameraImageSelector.setAttribute('src', url);
 
 
                 }).catch((err) => {
@@ -470,6 +507,7 @@ console.log("user is"+this.currentUser);
                 buttons: ['OK']
               });
               alert3.present();
+
               this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
                 this.group.value.photoUrl,res,this.group.value.mediaFiles,this.group.value.finalVideo).subscribe((res:any)=>{
                 let alert2 = this.alertCtrl.create({
