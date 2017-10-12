@@ -116,10 +116,18 @@
         <ion-label>Uploaded Files</ion-label>
         <ion-list >
           <ion-item *ngIf="group.value.mediaFiles.length<=1">No Files.Please upload photo/video</ion-item>
-          <ion-item *ngFor="let file of medialist">
-            <ion-avatar item-left>
-              <img src= {{file}}>
-            </ion-avatar>
+          <!--<ion-item *ngFor="let file of medialist">-->
+          <ion-item >
+            <ion-slides  class="image-slider" loop="true" slidesPerView="5">
+              <ion-slide *ngFor="let file of medialist">
+                <ion-avatar item-left>
+                  <img src= {{file}}>
+                </ion-avatar>
+              </ion-slide>
+            </ion-slides>
+            <!--<ion-avatar item-left>-->
+              <!--<img src= {{file}}>-->
+            <!--</ion-avatar>-->
           </ion-item>
         </ion-list>
       </ion-col>

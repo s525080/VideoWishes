@@ -277,6 +277,8 @@ console.log("user is"+this.currentUser);
 
   photoUpload() {
 
+    let photoKey:string = 'p';
+
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Select Image Source',
       buttons: [
@@ -319,7 +321,7 @@ console.log("user is"+this.currentUser);
 
 
                   this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
-                    url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo).subscribe((res:any)=>{
+                    url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo,photoKey).subscribe((res:any)=>{
                     let alert2 = this.alertCtrl.create({
                       title: 'in subscribe!',
                       subTitle: 'res is'+res.json(),
@@ -419,7 +421,7 @@ console.log("user is"+this.currentUser);
 
 
                   this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
-                    url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo).subscribe((res:any)=>{
+                    url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo,photoKey).subscribe((res:any)=>{
                     let alert2 = this.alertCtrl.create({
                       title: 'in subscribe!',
                       subTitle: 'res is'+res.json(),
@@ -466,6 +468,8 @@ console.log("user is"+this.currentUser);
   }
 
   videoUpload(){
+
+    let videoKey:string = 'v';
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Select Video Source',
       buttons: [
@@ -509,7 +513,7 @@ console.log("user is"+this.currentUser);
               alert3.present();
 
               this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
-                this.group.value.photoUrl,res,this.group.value.mediaFiles,this.group.value.finalVideo).subscribe((res:any)=>{
+                this.group.value.photoUrl,res,this.group.value.mediaFiles,this.group.value.finalVideo,videoKey).subscribe((res:any)=>{
                 let alert2 = this.alertCtrl.create({
                   title: 'in subscribe!',
                   subTitle: 'res is'+res.json(),

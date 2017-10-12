@@ -198,7 +198,7 @@ export class GroupsProvider {
    // return  this.chatGroups.slice();
   }
 
-  updateGroup(currentUser:string,groupId:string ,groupMatchKey:string,owner: string,photoUrl:string, videoUrl:string, mediaFiles:string[],finalVideo:string){
+  updateGroup(currentUser:string,groupId:string ,groupMatchKey:string,owner: string,photoUrl:string, videoUrl:string, mediaFiles:string[],finalVideo:string,key:string){
 
     let alert = this.alertCtrl.create({
       title: 'Photo has been uploaded',
@@ -226,10 +226,10 @@ export class GroupsProvider {
     // media.push(photoUrl);
     // media.push(videoUrl);
 
-    if(photoUrl!='' ){
+    if(key =='p' && photoUrl!=''){
       mediaFiles.push(photoUrl);
     }
-    if(videoUrl!='' ){
+    if(key=='v' && videoUrl!='' ){
       mediaFiles.push(videoUrl);
     }
     //mediaFiles.push(photoUrl);
