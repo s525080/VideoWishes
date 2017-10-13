@@ -18,7 +18,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { VideoPlayer } from '@ionic-native/video-player';
-
+import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
 
 
 /**
@@ -48,7 +48,7 @@ export class ExistingGroupPage implements OnInit{
               public camera:Camera,private mediaCapture: MediaCapture,public alertCtrl:AlertController,
               public actionSheetCtrl: ActionSheetController,public filechooser: FileChooser,public http:Http,
               public userservice: UserProvider,public file:File,public groupservice:GroupsProvider,
-              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer) {
+              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer,private streamingMedia: StreamingMedia) {
 
 this.currentUser = firebase.auth().currentUser.uid;
 console.log("user is"+this.currentUser);
@@ -80,11 +80,19 @@ console.log("user is"+this.currentUser);
     this.photoViewer.show(src);
   }
   onvideoClick(src:string){
-    this.videoPlayer.play(src).then(() => {
-      console.log('video completed');
-    }).catch(err => {
-      console.log(err);
-    });
+    // this.videoPlayer.play(src).then(() => {
+    //   console.log('video completed');
+    // }).catch(err => {
+    //   console.log(err);
+    // });
+
+    let options: StreamingVideoOptions = {
+      successCallback: () => { console.log('Video played') },
+      errorCallback: (e) => { console.log('Error streaming') },
+      orientation: 'landscape'
+    };
+
+    this.streamingMedia.playVideo(src, options);
   }
 
   loadmedia(){
@@ -461,6 +469,12 @@ console.log("user is"+this.currentUser);
             let options: CaptureVideoOptions = {limit: 3};
             this.mediaCapture.captureVideo()
               .then((data: MediaFile[]) => {
+                let alert2 = this.alertCtrl.create({
+                  title: 'Entered!',
+                  subTitle: JSON.stringify( data[0].fullPath),
+                  buttons: ['OK']
+                });
+                alert2.present();
                 console.log(data);
                //let index = data[0].fullPath.lastIndexOf('/'), finalPath = data[0].fullPath.substr(0, index);
                 console.log('File URI: ' + JSON.stringify( data[0].fullPath));

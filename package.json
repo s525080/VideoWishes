@@ -117,7 +117,7 @@
             "cordova-sms-plugin": {},
             "cordova-plugin-x-socialsharing": {},
             "cordova-plugin-media-capture": {
-                "CAMERA_USAGE_DESCRIPTION": " ",
+                "CAMERA_USAGE_DESCRIPTION": "to record video",
                 "MICROPHONE_USAGE_DESCRIPTION": " ",
                 "PHOTOLIBRARY_USAGE_DESCRIPTION": " "
             },

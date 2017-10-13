@@ -38,7 +38,7 @@ import {WhatsnewPage} from "../pages/whatsnew/whatsnew";
 import {WhatshappeningPage} from "../pages/whatshappening/whatshappening";
 import {SettingsPage} from "../pages/settings/settings";
 import {PopoverPage} from "../pages/popover/popover";
-// import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
+ import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
 import {Contact, Contacts} from "@ionic-native/contacts";
 import {NewGroupPage} from "../pages/new-group/new-group";
 import {ExistingGroupPage} from "../pages/existing-group/existing-group";
@@ -143,7 +143,8 @@ import {VideoPlayer} from "@ionic-native/video-player";
     FileTransfer,
     HTTP,
     PhotoViewer,
-    VideoPlayer
+    VideoPlayer,
+    StreamingMedia
   ]
 })
 export class AppModule {}
