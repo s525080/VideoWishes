@@ -18,7 +18,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { VideoPlayer } from '@ionic-native/video-player';
-import { VideoEditor } from '@ionic-native/video-editor';
+
 
 
 /**
@@ -48,7 +48,7 @@ export class ExistingGroupPage implements OnInit{
               public camera:Camera,private mediaCapture: MediaCapture,public alertCtrl:AlertController,
               public actionSheetCtrl: ActionSheetController,public filechooser: FileChooser,public http:Http,
               public userservice: UserProvider,public file:File,public groupservice:GroupsProvider,
-              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer,private videoEditor: VideoEditor) {
+              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer) {
 
 this.currentUser = firebase.auth().currentUser.uid;
 console.log("user is"+this.currentUser);
@@ -73,19 +73,7 @@ console.log("user is"+this.currentUser);
       'fileUri':url,
       'outputFileName':'video Thumbnail'
     }
-    this.videoEditor.createThumbnail(options).then((res:any) => {
-      console.log('res is '+res);
-      let alertnew = this.alertCtrl.create({
-        title: 'Response is!',
-        subTitle: res,
-        buttons: ['OK']
-      });
 
-      alertnew.present();
-      this.thumbnail = res;
-    }).catch((err:any)=> {
-      console.log('Error in creating thumbnail'+err);
-    });
 
   }
   onphotoClick(src:string){
@@ -187,15 +175,7 @@ console.log("user is"+this.currentUser);
 
         console.log('File URI: ' + JSON.stringify(fileUri));
          let fileURL = JSON.stringify(fileUri);
-
-
         this.file.resolveLocalFilesystemUrl("file://"+fileUri).then((fileEntry:any) => {
-          // let alert6 = this.alertCtrl.create({
-          //   title: 'File entry is',
-          //   subTitle: fileUri,
-          //   buttons: ['OK']
-          // });
-          // alert6.present();
           console.log('Type: ' + (typeof fileEntry));
           fileEntry.file( (file) => {
             console.log('File: ' + (typeof file) + ', ' + JSON.stringify(file));
@@ -476,17 +456,103 @@ console.log("user is"+this.currentUser);
         {
           text: 'Take Video',
           handler: () => {
-            let options = {
-              sourceType: this.camera.PictureSourceType.CAMERA,
-              mediaType: this.camera.MediaType.ALLMEDIA,
-              destinationType: this.camera.DestinationType.DATA_URL
-            }
-            let loader = this.loadingCtrl.create({
-              content: 'Please wait'
-            })
-            //loader.present();
 
 
+            let options: CaptureVideoOptions = {limit: 3};
+            this.mediaCapture.captureVideo()
+              .then((data: MediaFile[]) => {
+                console.log(data);
+               //let index = data[0].fullPath.lastIndexOf('/'), finalPath = data[0].fullPath.substr(0, index);
+                console.log('File URI: ' + JSON.stringify( data[0].fullPath));
+                let fileURL = JSON.stringify( data[0].fullPath);
+                this.file.resolveLocalFilesystemUrl("file://"+ data[0].fullPath).then((fileEntry:any) => {
+                  console.log('Type: ' + (typeof fileEntry));
+                  fileEntry.file( (file) => {
+                    console.log('File: ' + (typeof file) + ', ' + JSON.stringify(file));
+
+                    const fileReader = new FileReader();
+
+                    fileReader.onloadend = (result: any) => {
+                      console.log('File Reader Result: ' + JSON.stringify(result));
+                      let arrayBuffer = result.target.result;
+                      let blob = new Blob([new Uint8Array(arrayBuffer)]);
+                      const name = '' + Date.now() + firebase.auth().currentUser.uid;
+                      let alert2 = this.alertCtrl.create({
+                        title: 'blob created!',
+                        subTitle: name,
+                        buttons: ['OK']
+                      });
+                      alert2.present();
+                      let loader = this.loadingCtrl.create({
+                        content: 'Please wait'
+                      });
+                      loader.present();
+
+                      let storageRef = firebase.storage().ref('/videos');
+                      const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId);
+                      //let metadata =  {type: 'video/mp4'};
+                      if((fileURL.indexOf(".jpg") != -1)|| (fileURL.indexOf(".JPG") != -1) || (fileURL.indexOf(".png") != -1) || (fileURL.indexOf(".PNG") != -1)){
+                        var metadata =  {'contentType': 'image/jpg'};
+                      }else {
+                        var metadata = {'contentType':'video/mp4'};
+                      }
+                      let alert10 = this.alertCtrl.create({
+                        title: 'meta data is!',
+                        subTitle: JSON.stringify(metadata),
+                        buttons: ['OK']
+                      });
+                      alert10.present();
+
+                      imageRef.put(blob,metadata).then((res) => {
+                        imageRef.getDownloadURL().then((url) => {
+
+                          let alert2 = this.alertCtrl.create({
+                            title: 'download url is!',
+                            subTitle: url,
+                            buttons: ['OK']
+                          });
+                          alert2.present();
+                          this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+                            this.group.value.photoUrl,url,this.group.value.mediaFiles,this.group.value.finalVideo,videoKey).subscribe((res:any)=>{
+                            let alert2 = this.alertCtrl.create({
+                              title: 'in subscribe!',
+                              subTitle: 'res is'+res.json(),
+                              buttons: ['OK']
+                            });
+                            alert2.present();
+                          })
+
+                          let cameraImageSelector = document.getElementById('lib-video');
+
+                          cameraImageSelector.setAttribute('src', url);
+
+                          loader.dismiss();
+                        }).catch((err) => {
+                          loader.dismiss();
+
+                        })
+                      });
+                      // this.upload(blob, name , file.type, resolve, reject);
+                    };
+
+                    fileReader.onerror = (error: any) => {
+                    };
+
+                    fileReader.readAsArrayBuffer(file);
+                  }, (error) => {
+                    console.log('File Entry Error: ' + JSON.stringify(error));
+                  });
+                }, (error) => {
+                  let alert3 = this.alertCtrl.create({
+                    title: 'error!',
+                    subTitle: 'error',
+                    buttons: ['OK']
+                  });
+                  alert3.present();
+                  console.log('Error resolving file: ' + JSON.stringify(error));
+                });
+
+              });
           }
         },
         {

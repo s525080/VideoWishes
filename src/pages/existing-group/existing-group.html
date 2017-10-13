@@ -102,8 +102,8 @@
             <!--<ion-avatar item-left>-->
               <!--<img src={{this.group.value.videoUrl}} (click)="onvideoClick(this.group.value.videoUrl)">-->
             <!--</ion-avatar>-->
-            <ion-avatar item-left>
-              <img src="assets/images/video_thumbnail.PNG" (click)="onvideoClick(this.group.value.videoUrl)">
+            <ion-avatar item-left *ngIf="this.group.value.videoUrl != ''" >
+              <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(this.group.value.videoUrl)">
             </ion-avatar>
 
           </ion-item>

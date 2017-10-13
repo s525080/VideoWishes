@@ -56,11 +56,8 @@ import {SocialSharing} from "@ionic-native/social-sharing";
 import {MediaCapture} from "@ionic-native/media-capture";
 import {FileTransfer} from "@ionic-native/file-transfer";
 import {HTTP} from "@ionic-native/http";
-import { CloudinaryModule, CloudinaryConfiguration } from '@cloudinary/angular';
-import { Cloudinary } from 'cloudinary-core';
 import {PhotoViewer} from "@ionic-native/photo-viewer";
 import {VideoPlayer} from "@ionic-native/video-player";
-import {VideoEditor} from "@ionic-native/video-editor";
 
 
 @NgModule({
@@ -93,12 +90,6 @@ import {VideoEditor} from "@ionic-native/video-editor";
     NgCalendarModule,
     BrowserModule,
     HttpModule,
-    CloudinaryModule.forRoot({Cloudinary},
-      {cloud_name: 'vvish',
-        api_key: '374669333581162',
-        api_secret: 'OtnDc_BxUicqXpTJdpNNW4nGSkU',
-        enhance_image_tag: true,
-        static_image_support: false} as CloudinaryConfiguration),
     IonicModule.forRoot(MyApp),
      AngularFireModule.initializeApp(config)
   ],
@@ -151,10 +142,8 @@ import {VideoEditor} from "@ionic-native/video-editor";
     MediaCapture,
     FileTransfer,
     HTTP,
-    CloudinaryModule,
     PhotoViewer,
-    VideoPlayer,
-    VideoEditor
+    VideoPlayer
   ]
 })
 export class AppModule {}

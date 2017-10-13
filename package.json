@@ -64,7 +64,6 @@
         "cordova-plugin-splashscreen": "^4.0.3",
         "cordova-plugin-statusbar": "^2.2.2",
         "cordova-plugin-streaming-media": "^1.0.2",
-        "cordova-plugin-video-editor": "^1.1.3",
         "cordova-plugin-video-player": "git+https://github.com/moust/cordova-plugin-videoplayer.git",
         "cordova-plugin-video-thumbnail": "^2.0.1",
         "cordova-plugin-whitelist": "^1.3.1",
@@ -104,8 +103,8 @@
             "cordova-plugin-filechooser": {},
             "cordova-plugin-file": {},
             "cordova-plugin-camera": {
-                "CAMERA_USAGE_DESCRIPTION": " ",
-                "PHOTOLIBRARY_USAGE_DESCRIPTION": " "
+                "CAMERA_USAGE_DESCRIPTION": "To capture media",
+                "PHOTOLIBRARY_USAGE_DESCRIPTION": "to select video"
             },
             "cordova-plugin-compat": {},
             "cordova-plugin-file-transfer": {},
@@ -132,8 +131,7 @@
             },
             "com-sarriaroman-photoviewer": {},
             "com.moust.cordova.videoplayer": {},
-            "cordova-plugin-video-thumbnail": {},
-            "cordova-plugin-video-editor": {}
+            "cordova-plugin-video-thumbnail": {}
         },
         "platforms": [
             "android",
