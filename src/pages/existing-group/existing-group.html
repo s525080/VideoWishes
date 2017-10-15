@@ -77,7 +77,7 @@
 
     <ion-row >
       <ion-col >
-        <ion-label>Photo</ion-label>
+        <ion-label>Uploaded Media</ion-label>
         <ion-list >
           <ion-item >
             <ion-avatar *ngIf="this.group.value.photoUrl == ''" item-left>
@@ -89,39 +89,48 @@
             <ion-avatar   item-left>
               <img src={{this.group.value.photoUrl}} (click)="onphotoClick(this.group.value.photoUrl)">
             </ion-avatar>
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col >
-        <ion-label>Video</ion-label>
-        <ion-list >
-          <ion-item >
             <ion-avatar *ngIf="this.group.value.videoUrl == ''" item-left>
               <img  src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
             </ion-avatar>
-            <!--<ion-avatar item-left>-->
-              <!--<img src={{this.group.value.videoUrl}} (click)="onvideoClick(this.group.value.videoUrl)">-->
-            <!--</ion-avatar>-->
             <ion-avatar item-left *ngIf="this.group.value.videoUrl != ''" >
               <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(this.group.value.videoUrl)">
             </ion-avatar>
-
           </ion-item>
         </ion-list>
       </ion-col>
+      <!--<ion-col >-->
+        <!--<ion-label>Video</ion-label>-->
+        <!--<ion-list >-->
+          <!--<ion-item >-->
+            <!--<ion-avatar *ngIf="this.group.value.videoUrl == ''" item-left>-->
+              <!--<img  src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">-->
+            <!--</ion-avatar>-->
+            <!--&lt;!&ndash;<ion-avatar item-left>&ndash;&gt;-->
+              <!--&lt;!&ndash;<img src={{this.group.value.videoUrl}} (click)="onvideoClick(this.group.value.videoUrl)">&ndash;&gt;-->
+            <!--&lt;!&ndash;</ion-avatar>&ndash;&gt;-->
+            <!--<ion-avatar item-left *ngIf="this.group.value.videoUrl != ''" >-->
+              <!--<img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(this.group.value.videoUrl)">-->
+            <!--</ion-avatar>-->
+
+          <!--</ion-item>-->
+        <!--</ion-list>-->
+      <!--</ion-col>-->
     </ion-row>
 
     <ion-row *ngIf="group.value.owner == currentUser">
       <ion-col >
-        <ion-label>Uploaded Files</ion-label>
+        <ion-label>Uploaded Files of all members</ion-label>
         <ion-list >
           <ion-item *ngIf="group.value.mediaFiles.length<=1">No Files.Please upload photo/video</ion-item>
           <!--<ion-item *ngFor="let file of medialist">-->
           <ion-item >
             <ion-slides  class="image-slider" loop="true" slidesPerView="5">
               <ion-slide *ngFor="let file of medialist">
-                <ion-avatar item-left>
+                <ion-avatar *ngIf="file.indexOf('images')!=-1" item-left>
                   <img src= {{file}}>
+                </ion-avatar>
+                <ion-avatar *ngIf="file.indexOf('videos')!=-1" item-left>
+                  <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(this.group.value.videoUrl)">
                 </ion-avatar>
               </ion-slide>
             </ion-slides>

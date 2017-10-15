@@ -34,7 +34,7 @@
 
       <ion-row>
         <ion-col>
-          <h2>{{member.value.title }}</h2>
+          <h2><b>{{member.value.title }}</b></h2>
         </ion-col>
         <ion-col>
           <ion-badge *ngIf="member.value.type == 'Picnic'" item-end>Picnic</ion-badge>
@@ -45,8 +45,8 @@
         <ion-col>
           <ion-note >Initiated By:{{ member.value.creator}} </ion-note>
         </ion-col>
-        <ion-col>
-          <ion-note class="note" item-end>{{member.value.date}}</ion-note> </ion-col>
+        <!--<ion-col>-->
+          <!--<ion-note class="note" item-end>{{member.value.date}}</ion-note> </ion-col>-->
 
         </ion-row>
     </button>
