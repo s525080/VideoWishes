@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {
   ActionSheetController, AlertController,
   FabContainer, ModalController, NavController, NavParams, Platform, PopoverController,
-  ViewController,Tabs
+  ViewController, Tabs, ToastController
 } from 'ionic-angular';
 import {ChatsPage} from "../chats/chats";
 import {SettingsPage} from "../settings/settings";
@@ -41,6 +41,8 @@ export class WhatsnewPage implements OnInit{
   contactlist: any;
   selectedValue:any;
   token:any;
+  // userID:any;
+  currentDate = (new Date()).toISOString();
   opts = {
     filter : "M",
     multiple: true,
@@ -52,7 +54,7 @@ export class WhatsnewPage implements OnInit{
               private actionController: ActionSheetController, private alertCtrl : AlertController,
               private contacts: Contacts,private cnt: Contact, public platform: Platform,
               public authService : AuthProvider,public popoverCtrl: PopoverController,
-              private userService:UserProvider) {
+              private userService:UserProvider,public toastCtrl: ToastController) {
 
 
 
@@ -66,6 +68,7 @@ export class WhatsnewPage implements OnInit{
 
 
   }
+
 
   private initializeForm(){
     this.chatGroupForm = new FormGroup({
@@ -176,26 +179,67 @@ export class WhatsnewPage implements OnInit{
       cnt => {
         console.log('contact is:'+cnt.displayName);
         console.log('contact is:'+cnt.phoneNumbers[0].value);
-        let contactInfo:any = {
-          'uid':'',
-          'tel':cnt.phoneNumbers[0].value,
-          'displayName':cnt.name.formatted,
-          'photoURL':''
-        };
+        let updatedNumber:string;
+        if(cnt.phoneNumbers[0].value.charAt(0) != '+' ){
+          const alert = this.alertCtrl.create({
+            title: 'Missing Country Code',
+            inputs: [
+              {
+                name: 'countrycode',
+                placeholder: 'Enter Country Code',
+                type:'text'
 
-        (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(contactInfo));
-        console.log(this.chatGroupForm.get('members'));
-        const newContactAlert = this.alertCtrl.create({
-          title: 'contact',
-          message : JSON.stringify(contactInfo),
-          buttons : [
-            {
-              text : ' Cancel',
-              role : 'cancel'
-            }
-          ]
-        })
-         newContactAlert.present();
+              }
+            ],
+            buttons: [
+
+              {
+                text: 'Save',
+                handler: data => {
+                  if (data.countrycode != '') {
+                    // logged in!
+                    updatedNumber = data.countrycode.toString()+' '+cnt.phoneNumbers[0].value;
+
+                    const toast = this.toastCtrl.create({
+                      message: 'updatedNumber is '+updatedNumber,
+                      duration: 3000,
+                      position: 'bottom'
+                    });
+
+                    toast.onDidDismiss(() => {
+                      console.log('Dismissed toast');
+                    });
+
+                    toast.present();
+                    this.updateContact(updatedNumber,cnt.name.formatted)
+
+                  } else {
+                    const toast = this.toastCtrl.create({
+                      message: 'Please enter Country Code',
+                      duration: 3000,
+                      position: 'bottom'
+                    });
+
+                    toast.onDidDismiss(() => {
+                      console.log('Dismissed toast');
+                    });
+
+                    toast.present();
+
+                    // invalid login
+                    return false;
+                  }
+                }
+              }
+            ]
+          });
+          alert.present();
+        }else {
+          updatedNumber = cnt.phoneNumbers[0].value;
+          this.updateContact(updatedNumber,cnt.name.formatted)
+        }
+
+
       }
     ).catch(error => {
 
@@ -203,21 +247,219 @@ export class WhatsnewPage implements OnInit{
 
   }
 
+  updateContact(updatedNumber:string,name:string){
+    //let userID:string ='';
+    let contactInfo:any;
+    this.isUidExists(updatedNumber).then((res)=>{
+
+      if(res == ''){
+         contactInfo = {
+          'uid':updatedNumber,
+          'tel':updatedNumber,
+          'displayName':name,
+          'photoURL':''
+        };
+      }else{
+         contactInfo = {
+          'uid':res,
+          'tel':updatedNumber,
+          'displayName':name,
+          'photoURL':''
+        };
+      }
+
+
+
+      (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(contactInfo));
+      console.log(this.chatGroupForm.get('members'));
+      const newContactAlert = this.alertCtrl.create({
+        title: 'contact',
+        message : JSON.stringify(contactInfo),
+        buttons : [
+          {
+            text : ' Cancel',
+            role : 'cancel'
+          }
+        ]
+      })
+      newContactAlert.present();
+
+    }).catch((err)=>{
+      const newContactAlert = this.alertCtrl.create({
+        title: 'error',
+        message : "error"+err,
+        buttons : [
+          {
+            text : ' Cancel',
+            role : 'cancel'
+          }
+        ]
+      })
+      newContactAlert.present();
+
+    });
+
+
+
+
+  }
+
+  isUidExists(updatedNumber:string){
+    let userID:string ='';
+    var promise = new Promise((resolve, reject) => {
+      this.userService.getallusersPhone().then((res) => {
+        // this.userService.getallusersFromUserGroup().then((res) => {
+
+        let userarray: any = res;
+        let smsarray: any = [];
+
+        for (let user in userarray) {
+          console.log("tel is " + userarray[user].tel)
+          var userStr = userarray[user].code + '' + userarray[user].tel;
+
+
+          var memStr = updatedNumber;
+          // memStr.replace( /\D+/g, '');
+
+
+          //memStr.replace( /\D/g, '');
+          // var value = '675-805-714';
+          var numberPattern = /\d+/g;
+          //memStr = memStr.match(numberPattern).join();
+         // userStr = userStr.match(numberPattern).join();
+          //memStr.replace(/(?!\w)./g, '');
+          var resultUserSring = userStr.replace(/[^\w]/gi, '');
+          var resultingString = memStr.replace(/[^\w]/gi, '');
+
+
+          if (resultUserSring == resultingString) {
+
+
+            //setting uid of member
+            userID = userarray[user].uid;
+            const newContactAlert = this.alertCtrl.create({
+              title: 'new group',
+              message: userStr + " and " + resultingString + " finally " + userID,
+              buttons: [
+                {
+                  text: ' Cancel',
+                  role: 'cancel'
+                }
+              ]
+            })
+            newContactAlert.present();
+            //end
+
+
+          }
+
+
+        }
+
+        return userID;
+      }).then((res)=>{
+        resolve(res);
+
+      }).catch((err) => {
+reject(err);
+      });
+    })
+
+    return promise;
+  }
+
+  updateTargetContact(updatedNumber:string,name:string){
+    let contactInfo:any = {
+      'uid':updatedNumber,
+      'tel':updatedNumber,
+      'displayName':name,
+      'photoURL':''
+    };
+
+
+    (<FormArray>this.chatGroupForm.get('target')).push(new FormControl(contactInfo));
+
+    const newContactAlert = this.alertCtrl.create({
+      title: 'contact',
+      message : JSON.stringify(contactInfo),
+      buttons : [
+        {
+          text : ' Cancel',
+          role : 'cancel'
+        }
+      ]
+    })
+    newContactAlert.present();
+  }
   onSelectTarget(){
     let contact: Contact = this.contacts.create();
 
     this.contacts.pickContact().then(
-      cnt => {
-        let contactInfo:any = {
-          'uid':'',
-          'tel':cnt.phoneNumbers[0].value,
-          'displayName':cnt.name.formatted,
-          'photoURL':''
-        };
-        (<FormArray>this.chatGroupForm.get('target')).push(new FormControl(contactInfo));
+    cnt => {
+      console.log('contact is:'+cnt.displayName);
+      console.log('contact is:'+cnt.phoneNumbers[0].value);
+      let updatedNumber:string;
+      if(cnt.phoneNumbers[0].value.charAt(0) != '+' ){
+        const alert = this.alertCtrl.create({
+          title: 'Missing Country Code',
+          inputs: [
+            {
+              name: 'countrycode',
+              placeholder: 'Enter Country Code',
+              type:'text'
 
+            }
+          ],
+          buttons: [
 
+            {
+              text: 'Save',
+              handler: data => {
+                if (data.countrycode != '') {
+                  // logged in!
+                  updatedNumber = data.countrycode.toString()+' '+cnt.phoneNumbers[0].value;
+
+                  const toast = this.toastCtrl.create({
+                    message: 'updatedNumber is '+updatedNumber,
+                    duration: 3000,
+                    position: 'bottom'
+                  });
+
+                  toast.onDidDismiss(() => {
+                    console.log('Dismissed toast');
+                  });
+
+                  toast.present();
+                  this.updateTargetContact(updatedNumber,cnt.name.formatted)
+
+                } else {
+                  const toast = this.toastCtrl.create({
+                    message: 'Please enter Country Code',
+                    duration: 3000,
+                    position: 'bottom'
+                  });
+
+                  toast.onDidDismiss(() => {
+                    console.log('Dismissed toast');
+                  });
+
+                  toast.present();
+
+                  // invalid login
+                  return false;
+                }
+              }
+            }
+          ]
+        });
+        alert.present();
+      }else {
+        updatedNumber = cnt.phoneNumbers[0].value;
+        this.updateTargetContact(updatedNumber,cnt.name.formatted)
       }
+
+
+    }
     ).catch(error => {
 
     })

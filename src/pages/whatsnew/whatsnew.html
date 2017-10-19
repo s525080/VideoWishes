@@ -28,7 +28,7 @@
     <ion-list no-border>
 
       <ion-item>
-        <ion-label floating>Event name</ion-label>
+        <ion-label floating>Event Name</ion-label>
         <ion-input type="text" formControlName="title"></ion-input>
       </ion-item>
       <ion-item>
@@ -46,15 +46,15 @@
 
       <ion-item *ngIf="selectedValue !== 'Picnic'">
         <ion-label>Date</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MM/DD/YYYY HH:mm" min="2017" max="2020-10-31" formControlName="myDate"></ion-datetime>
+        <ion-datetime displayFormat="MMM DD, YYYY HH:mm" pickerFormat="MMM/DD/YYYY HH:mm" min={{currentDate}} max="2020-10-31" formControlName="myDate"></ion-datetime>
       </ion-item>
       <ion-item *ngIf="selectedValue === 'Picnic'">
         <ion-label>From Date</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MM/DD/YYYY HH:mm" min="2017" max="2020-10-31" formControlName="fromDate"></ion-datetime>
+        <ion-datetime displayFormat="MMM DD, YYYY HH:mm" pickerFormat="MMM/DD/YYYY HH:mm" min={{currentDate}} max="2020-10-31" formControlName="fromDate"></ion-datetime>
       </ion-item>
       <ion-item *ngIf="selectedValue === 'Picnic'">
         <ion-label>To Date</ion-label>
-        <ion-datetime displayFormat="MM/DD/YYYY HH:mm" pickerFormat="MM/DD/YYYY HH:mm" min="2017" max="2020-10-31" formControlName="toDate"></ion-datetime>
+        <ion-datetime displayFormat="MMM DD, YYYY HH:mm" pickerFormat="MMM/DD/YYYY HH:mm" min={{currentDate}} max="2020-10-31" formControlName="toDate"></ion-datetime>
       </ion-item>
     </ion-list>
     <button type="button" clear ion-button block (click)="onAddMembers()" >Add Members</button>
@@ -71,7 +71,7 @@
       </ion-item>
     </ion-list>
 
-    <button type="button" clear ion-button block (click)="onSelectTarget()" >For Whom? </button>
+    <button type="button" clear ion-button block (click)="onSelectTarget()" >To Whom? </button>
     <ion-list formArrayName="target">
       <ion-item *ngFor="let memControl of chatGroupForm.get('target').controls; let i = index">
         <ion-avatar item-left>
