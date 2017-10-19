@@ -37,6 +37,7 @@ export class ProfilePage {
   avatar: string;
   displayName: string;
   url:any;
+  user:any;
    //cl = new Cloudinary({cloud_name: "vvish", secure: true});
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -65,6 +66,7 @@ export class ProfilePage {
     loader.present();
     this.userservice.getuserdetails().then((res: any) => {
       loader.dismiss();
+      this.user = res;
       this.displayName = res.displayName;
       console.log("url is"+res.photoURL);
       this.avatar = res.photoURL;
@@ -82,35 +84,12 @@ export class ProfilePage {
 
   editimage() {
 
-    const base_url ='https://api.cloudinary.com/v1_1/vvish/image/upload';
     const image_url = '';
     //let body = { "file": "http://www.juliebergan.no/sites/g/files/g2000006326/f/sample_03.jpg", "upload_preset": "oaggw9ot" };
     var headers = new Headers();
     headers.append('Content-Type', 'application/json');
 
-    // this.http.post(base_url,
-    //   JSON.stringify(body),
-    //   {headers:headers})
-    //   .subscribe((res) =>
-    //   {
-    //     console.log('hey success');
-    //     console.log(res.json());
-    //       let alert = this.alertCtrl.create({
-    //         title: 'success!',
-    //         subTitle: JSON.stringify(res),
-    //         buttons: ['OK']
-    //       });
-    //       alert.present();
-    //   }),(err) =>
-    //   {
-    //     let alert = this.alertCtrl.create({
-    //       title: 'failed!',
-    //       subTitle: JSON.stringify(err),
-    //       buttons: ['OK']
-    //     });
-    //     alert.present();
-    //   };
-    //
+
 
 
     let actionSheet = this.actionSheetCtrl.create({
@@ -122,7 +101,7 @@ export class ProfilePage {
 
             this.camera.getPicture({
               sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
-              destinationType: this.camera.DestinationType.FILE_URI
+              destinationType: this.camera.DestinationType.DATA_URL
             }).then((imageData) => {
               this.avatar = 'data:image/jpeg;base64,'+imageData;
               this.url = this.avatar;
@@ -133,14 +112,16 @@ export class ProfilePage {
 
               const imageRef = storageRef.child(firebase.auth().currentUser.uid);
 
-
+              let loader2 = this.loadingCtrl.create({
+                content: 'Please wait'
+              });
+              loader2.present();
               imageRef.putString(this.url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
 
                 storageRef.child(firebase.auth().currentUser.uid).getDownloadURL().then((url) => {
 
 
-
-                  this.userservice.updateimage(url).then((res: any) => {
+                  this.userservice.updateimage(url,this.user).then((res: any) => {
                     if (res.success) {
                       let alert = this.alertCtrl.create({
                         title: 'Updated!',
@@ -150,8 +131,10 @@ export class ProfilePage {
                       alert.present();
                     }
                   });
+                  loader2.dismiss();
 
                 }).catch((err) => {
+                  loader2.dismiss();
                   let alert = this.alertCtrl.create({
                     title: 'Failed!',
                     subTitle: 'Your profile pic was not changed!!!',
@@ -180,7 +163,7 @@ export class ProfilePage {
            // this.takePicture(this.camera.PictureSourceType.CAMERA);
             this.camera.getPicture({
               sourceType: this.camera.PictureSourceType.CAMERA,
-              destinationType: this.camera.DestinationType.NATIVE_URI,
+              destinationType: this.camera.DestinationType.DATA_URL,
             }).then((imageData) => {
               this.avatar = "data:image/jpeg;base64,"+imageData;
 
@@ -192,7 +175,10 @@ export class ProfilePage {
 
               const imageRef = storageRef.child(firebase.auth().currentUser.uid);
 
-
+              let loader2 = this.loadingCtrl.create({
+                content: 'Please wait'
+              });
+              loader2.present();
 
               imageRef.putString(this.url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
 
@@ -203,7 +189,7 @@ export class ProfilePage {
                   //   buttons: ['OK']
                   // });
                   // alert.present();
-                  this.userservice.updateimage(url).then((res: any) => {
+                  this.userservice.updateimage(url,this.user).then((res: any) => {
                     if (res.success) {
                       let alert = this.alertCtrl.create({
                         title: 'Updated!',
@@ -213,8 +199,11 @@ export class ProfilePage {
                       alert.present();
                     }
                   });
+                  loader2.dismiss();
 
                 }).catch((err) => {
+                  loader2.dismiss();
+
                   let alert = this.alertCtrl.create({
                     title: 'Failed!',
                     subTitle: 'Your profile pic was not changed!!!',

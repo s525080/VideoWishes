@@ -1,10 +1,10 @@
-import {Component, NgZone} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {ActionSheetController, AlertController, LoadingController, NavController, NavParams} from 'ionic-angular';
 import {TabsPage} from "../tabs/tabs";
 import {UserProvider} from "../../providers/user/user";
 import {ImghandlerProvider} from "../../providers/imghandler/imghandler";
 import { Camera, CameraOptions } from '@ionic-native/camera';
-
+import firebase from 'firebase';
 /**
  * Generated class for the ProfilepicPage page.
  *
@@ -16,7 +16,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
   selector: 'page-profilepic',
   templateUrl: 'profilepic.html',
 })
-export class ProfilepicPage {
+export class ProfilepicPage implements OnInit{
    image: string;
   public base64Image: string;
   avatar : string;
@@ -25,14 +25,20 @@ export class ProfilepicPage {
     quality: 100,
     destinationType: this.camera.DestinationType.DATA_URL,
   };
-
+ user:any;
   imgurl = 'https://firebasestorage.googleapis.com/v0/b/myapp-4eadd.appspot.com/o/chatterplace.png?alt=media&token=e51fa887-bfc6-48ff-87c6-e2c61976534e';
   moveon = true;
   constructor(public navCtrl: NavController, public navParams: NavParams, public zone: NgZone,public imgservice: ImghandlerProvider,
               public userservice: UserProvider, public loadingCtrl: LoadingController,private camera: Camera,
               private actionController: ActionSheetController,private alertCtrl:AlertController) {
+
+
   }
 
+  ngOnInit(){
+
+    this.user = this.navParams.get('newUser');
+  }
   ionViewDidLoad() {
   }
 
@@ -65,14 +71,23 @@ export class ProfilepicPage {
 
               const imageRef = storageRef.child(firebase.auth().currentUser.uid);
 
+              let loader2 = this.loadingCtrl.create({
+                content: 'Please wait'
+              });
+              loader2.present();
 
               imageRef.putString(this.url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
 
                 storageRef.child(firebase.auth().currentUser.uid).getDownloadURL().then((url) => {
+                  let alert = this.alertCtrl.create({
+                    title: 'uploading! '+url,
+                    subTitle: JSON.stringify(this.user),
+                    buttons: ['OK']
+                  });
+                  alert.present();
 
 
-
-                  this.userservice.updateimage(url).then((res: any) => {
+                  this.userservice.updateimage(url,this.user).then((res: any) => {
                     if (res.success) {
                       let alert = this.alertCtrl.create({
                         title: 'Updated!',
@@ -81,17 +96,21 @@ export class ProfilepicPage {
                       });
                       alert.present();
 
-                      this.navCtrl.setRoot(TabsPage);
+
                     }
                   });
+                  loader2.dismiss();
+                  this.navCtrl.setRoot(TabsPage);
 
                 }).catch((err) => {
+                  loader2.dismiss();
                   let alert = this.alertCtrl.create({
                     title: 'Failed!',
                     subTitle: 'Your profile pic was not changed!!!',
                     buttons: ['OK']
                   });
                   alert.present();
+
                 });
               }).catch((err) => {
 
@@ -132,7 +151,10 @@ export class ProfilepicPage {
               // Create a reference to 'images/todays-date.jpg'
 
               const imageRef = storageRef.child(firebase.auth().currentUser.uid);
-
+              let loader2 = this.loadingCtrl.create({
+                content: 'Please wait'
+              });
+              loader2.present();
 
               imageRef.putString(this.url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
 
@@ -140,7 +162,7 @@ export class ProfilepicPage {
 
 
 
-                  this.userservice.updateimage(url).then((res: any) => {
+                  this.userservice.updateimage(url,this.user).then((res: any) => {
                     if (res.success) {
                       let alert = this.alertCtrl.create({
                         title: 'Updated!',
@@ -148,11 +170,14 @@ export class ProfilepicPage {
                         buttons: ['OK']
                       });
                       alert.present();
-                      this.navCtrl.setRoot(TabsPage);
+
                     }
                   });
+                  loader2.dismiss();
+                  this.navCtrl.setRoot(TabsPage);
 
                 }).catch((err) => {
+                  loader2.dismiss();
                   let alert = this.alertCtrl.create({
                     title: 'Failed!',
                     subTitle: 'Your profile pic was not changed!!!',
@@ -215,7 +240,7 @@ export class ProfilepicPage {
       content: 'Please wait'
     })
     loader.present();
-    this.userservice.updateimage(this.image).then((res: any) => {
+    this.userservice.updateimage(this.image,this.user).then((res: any) => {
       loader.dismiss();
       if (res.success) {
         this.navCtrl.setRoot(TabsPage);

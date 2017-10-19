@@ -58,6 +58,7 @@ import {FileTransfer} from "@ionic-native/file-transfer";
 import {HTTP} from "@ionic-native/http";
 import {PhotoViewer} from "@ionic-native/photo-viewer";
 import {VideoPlayer} from "@ionic-native/video-player";
+import { UserGroupProvider } from '../providers/user-group/user-group';
 
 
 @NgModule({
@@ -144,7 +145,8 @@ import {VideoPlayer} from "@ionic-native/video-player";
     HTTP,
     PhotoViewer,
     VideoPlayer,
-    StreamingMedia
+    StreamingMedia,
+    UserGroupProvider
   ]
 })
 export class AppModule {}
