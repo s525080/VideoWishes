@@ -4,7 +4,8 @@ import {LoginPage} from "../login/login";
 import {UserProvider} from "../../providers/user/user";
 import {ProfilepicPage} from "../profilepic/profilepic";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-
+import firebase from 'firebase';
+import {GroupsProvider} from "../../providers/groups/groups";
 
 
 @Component({
@@ -22,7 +23,7 @@ export class SignupPage {
   }
   newuserForm : FormGroup;
   constructor(public navCtrl: NavController, public navParams: NavParams, public userservice: UserProvider,
-              public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
+              public loadingCtrl: LoadingController, public toastCtrl: ToastController,private groupService: GroupsProvider) {
     this.initializeForm();
   }
 
@@ -69,8 +70,38 @@ export class SignupPage {
       loader.present();
       this.userservice.adduser(value).then((res: any) => {
         loader.dismiss();
-        if (res.success)
+        if (res.success){
+          let telNum = value.code+''+value.tel;
+          let newUid = res.uid;
+
+          let firedata = firebase.database().ref('/Groups');
+          this.groupService.getAllGroupUsers().then((res)=>{
+
+            console.log('all group users are'+res);
+           // console.log('tel num is'+telNum);
+            for(let user in res){
+             // console.log(user+' and '+res[user]);
+              var resultUserSring = telNum.replace(/[^\w]/gi, '');
+              var resultingString = res[user].replace(/[^\w]/gi, '');
+               console.log(resultUserSring +' and '+ resultingString);
+              if(resultingString == resultUserSring){
+                console.log('signup user num'+user);
+                user.slice(1);
+                console.log('signup user num new'+user);
+                var child = firedata.child(res[user]);
+                child.once('value', function(snapshot) {
+                  firedata.child(newUid).set(snapshot.val());
+                  child.remove();
+                });
+
+              }
+            }
+          })
+
+
           this.navCtrl.push(ProfilepicPage);
+        }
+
         else
           alert('Error' + res);
       })
@@ -100,8 +131,11 @@ export class SignupPage {
       loader.present();
       this.userservice.adduser(this.newuser).then((res: any) => {
         loader.dismiss();
-        if (res.success)
+        if (res.success){
           this.navCtrl.push(ProfilepicPage);
+
+        }
+
         else
           alert('Error' + res);
       })

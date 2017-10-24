@@ -9,6 +9,7 @@ import {SMS} from "@ionic-native/sms";
 import {UserProvider} from "../user/user";
 import firebase from 'firebase';
 import {AlertController} from "ionic-angular";
+import {MetaContact} from "../../models/interfaces/contact";
 /*
   Generated class for the GroupsProvider provider.
 
@@ -32,35 +33,50 @@ export class GroupsProvider {
 
 
   addGroup(owner:string,creator:string,title:string,description:string,type:string,date:string,fromdate:string,todate:string,
-           contacts:Contact[], target: Contact[], photoUrl:string, videoUrl:string, mediaFiles:string[],
-           finalVideo:string,groupMatchKey:string){
+           contacts:MetaContact[], target: Contact[], photoUrl:string, videoUrl:string, mediaFiles:string[],
+           finalVideo:string,groupMatchKey:string, role:string, modifiedDate:string){
     console.log("hey");
     //this.metaGroup = this.metaGroup || [];
     this.metaGroup = new MetaGroup(owner,creator,title,description,type,date,fromdate,todate,contacts,target,photoUrl,
-      videoUrl, mediaFiles,finalVideo,groupMatchKey) ;
+      videoUrl, mediaFiles,finalVideo,groupMatchKey,role,modifiedDate) ;
     //console.log(this.chatGroups);
     const userId = this.authService.getActiveUser().uid;
    // var ref = new Firebase("https://videowishes-acb24.firebaseio.com/GroupsCreated.json");
     //db secret key
 
     for (let member of contacts) {
+      let activeuser:any ='';
       this.userService.getallusersPhone().then((res) => {
         let userarray:any = res;
         let smsarray:any =[];
 
+
         for(let user in userarray){
-          console.log("tel is "+userarray[user].tel)
-          var userStr = userarray[user].tel;
-          userStr.replace( /\D+/g, '');
+          console.log("tel is "+userarray[user].code+''+userarray[user].tel)
+         //  var userStr = userarray[user].tel;
+         //  userStr.replace( /\D+/g, '');
+         //
+         //  var memStr = member.tel;
+         //  //memStr.replace( /\D/g, '');
+         // // var value = '675-805-714';
+         //  var numberPattern = /\d+/g;
+         //  memStr = memStr.match( numberPattern ).join([]);
+          var userStr = userarray[user].code + '' + userarray[user].tel;
+
 
           var memStr = member.tel;
-          //memStr.replace( /\D/g, '');
-         // var value = '675-805-714';
-          var numberPattern = /\d+/g;
-          memStr = memStr.match( numberPattern ).join([]);
+          // memStr.replace( /\D+/g, '');
 
 
-          if(userStr == memStr){
+
+          var resultUserSring = userStr.replace(/[^\w]/gi, '');
+          var resultingString = memStr.replace(/[^\w]/gi, '');
+
+          console.log(resultingString+'compares with'+resultUserSring);
+
+
+          if(resultingString == resultUserSring ){
+            activeuser = member.tel;
             const newContactAlert = this.alertCtrl.create({
               title: 'new group',
               message :userStr +" and "+memStr+" "+ userarray[user].uid ,
@@ -77,10 +93,12 @@ export class GroupsProvider {
             newContactAlert.present();
             let newmember = userarray[user];
             let memGroup = new MetaGroup(owner,creator,title,description,type,date,fromdate,todate,contacts,target,photoUrl,
-              videoUrl, mediaFiles,finalVideo,groupMatchKey) ;
+              videoUrl, mediaFiles,finalVideo,groupMatchKey,'Participant',modifiedDate) ;
             const token3 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
+            let url = 'https://vvish-91286.firebaseio.com/Groups/'+ userarray[user].uid + '/GroupsCreated.json?auth='+token3;
+            console.log('adding group woht url '+url);
             this.http
-              .post('https://vvish-91286.firebaseio.com/Groups/'+ userarray[user].uid + '/GroupsCreated.json?auth='+token3,this.metaGroup)
+              .post('https://vvish-91286.firebaseio.com/Groups/'+ userarray[user].uid + '/GroupsCreated.json?auth='+token3,memGroup)
               .map((res: Response) => {
 
                 return res.json();
@@ -101,13 +119,34 @@ export class GroupsProvider {
 
           }
           else{
+
             smsarray.push(userarray[user]);
           }
+        }
+        console.log(member.tel+' active user is '+activeuser);
+        if(member.tel != activeuser){
+          //
+          const token3 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
+          let phoneNum = member.tel;
+          console.log(phoneNum);
+          let memGroup = new MetaGroup(owner,creator,title,description,type,date,fromdate,todate,contacts,target,photoUrl,
+            videoUrl, mediaFiles,finalVideo,groupMatchKey,'Participant',modifiedDate) ;
+          this.http
+            .post('https://vvish-91286.firebaseio.com/Groups/'+''+ phoneNum + '/GroupsCreated.json?auth='+token3,memGroup)
+            .map((res: Response) => {
+
+              return res.json();
+            }).subscribe((res)=>{
+
+          });
+
+          //
         }
 
       }).catch((err)=>{
 
       });
+
       console.log('sms sent to'+JSON.stringify(member));
       //this.sms.send(member.name._objectInstance.phoneNumbers.value);
     }
@@ -198,6 +237,26 @@ export class GroupsProvider {
    // return  this.chatGroups.slice();
   }
 
+  getAllGroupUsers(){
+    let firedata = firebase.database().ref('/Groups');
+    var promise = new Promise((resolve, reject) => {
+      firedata.once('value', (snapshot) => {
+        let userdata = snapshot.val();
+        console.log(userdata);
+        let temparr = [];
+        for (let user in userdata) {
+          // console.log(user);
+          temparr.push(user);
+        }
+        console.log('temp array is' +temparr);
+        resolve(temparr);
+      }).catch((err) => {
+        reject(err);
+      })
+    })
+    return promise;
+  }
+
   updateGroup(currentUser:string,groupId:string ,groupMatchKey:string,owner: string,photoUrl:string, videoUrl:string, mediaFiles:string[],finalVideo:string,key:string){
 
     let alert = this.alertCtrl.create({
@@ -206,13 +265,14 @@ export class GroupsProvider {
       buttons: ['OK']
     });
     alert.present();
-
+    let currentDate = (new Date()).toISOString();
     const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
     let body = {
       'photoUrl':photoUrl,
       'videoUrl':videoUrl,
       'mediaFiles':mediaFiles,
       'finalVideo':finalVideo,
+      'modifiedDate':currentDate
     }
     this.getOwnerGroupId(owner,groupMatchKey);
 

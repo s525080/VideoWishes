@@ -37,7 +37,8 @@
           <h2><b>{{member.value.title }}</b></h2>
         </ion-col>
         <ion-col>
-          <ion-badge *ngIf="member.value.type == 'Picnic'" item-end>Picnic</ion-badge>
+          <!--<ion-badge *ngIf="member.value.type == 'Memories'" item-end>{{member.value.type}}</ion-badge>-->
+          <ion-badge item-end>{{member.value.type}}</ion-badge>
         </ion-col>
 
       </ion-row>

@@ -16,7 +16,7 @@ import {Component, NgZone} from "@angular/core";
 
 
 declare var require: any;
-var cloudinary = require('cloudinary');
+
 // import { Cloudinary } from 'cloudinary-core';
 // //import { Cloudinary } from '@cloudinary/angular';
 // import { CloudinaryModule } from '@cloudinary/angular';

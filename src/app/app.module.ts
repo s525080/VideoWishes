@@ -7,10 +7,10 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { config } from './app.firebaseconfig';
 
 import { FriendPipe } from '../pipes/friends';
-import 'hammerjs';
-import 'hammer-timejs';
+
 
 import { AngularFireAuth } from 'angularfire2/auth';
+
 import { AngularFireModule } from 'angularfire2';
 
 import { MyApp } from './app.component';
@@ -38,7 +38,7 @@ import {WhatsnewPage} from "../pages/whatsnew/whatsnew";
 import {WhatshappeningPage} from "../pages/whatshappening/whatshappening";
 import {SettingsPage} from "../pages/settings/settings";
 import {PopoverPage} from "../pages/popover/popover";
- import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
+import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
 import {Contact, Contacts} from "@ionic-native/contacts";
 import {NewGroupPage} from "../pages/new-group/new-group";
 import {ExistingGroupPage} from "../pages/existing-group/existing-group";
@@ -58,7 +58,6 @@ import {FileTransfer} from "@ionic-native/file-transfer";
 import {HTTP} from "@ionic-native/http";
 import {PhotoViewer} from "@ionic-native/photo-viewer";
 import {VideoPlayer} from "@ionic-native/video-player";
-import { UserGroupProvider } from '../providers/user-group/user-group';
 
 
 @NgModule({
@@ -145,8 +144,7 @@ import { UserGroupProvider } from '../providers/user-group/user-group';
     HTTP,
     PhotoViewer,
     VideoPlayer,
-    StreamingMedia,
-    UserGroupProvider
+    StreamingMedia
   ]
 })
 export class AppModule {}

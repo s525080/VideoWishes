@@ -52,6 +52,15 @@
             </ion-avatar>
             <!--{{newcontact.name._objectInstance.name.formatted}}-->
             {{newcontact.displayName}}
+
+            <button *ngIf="newcontact.photoUrl!=''"
+              ion-button
+              icon-only
+               color="secondary" ><ion-icon name="image"></ion-icon></button>
+            <button *ngIf="newcontact.videoUrl!=''"
+              ion-button
+              icon-only
+               color="secondary"><ion-icon name="videocam"></ion-icon></button>
           </ion-item>
         </ion-list>
       </ion-col>
@@ -75,6 +84,21 @@
       </ion-col>
     </ion-row>
 
+    <ion-row>
+      <ion-col>
+        <button ion-button icon-start block (click)="photoUpload()">
+          <ion-icon name="camera"></ion-icon>
+          Upload Photo
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button icon-start block (click)="videoUpload()">
+          <ion-icon name="images"></ion-icon>
+          Upload video
+        </button>
+      </ion-col>
+    </ion-row>
+
     <ion-row >
       <ion-col >
         <ion-label>Uploaded Media</ion-label>
@@ -86,7 +110,7 @@
             <!--<ion-avatar   item-left>-->
               <!--<img id ="camera-image" >-->
             <!--</ion-avatar>-->
-            <ion-avatar   item-left>
+            <ion-avatar  *ngIf="this.group.value.photoUrl != ''" item-left>
               <img src={{this.group.value.photoUrl}} (click)="onphotoClick(this.group.value.photoUrl)">
             </ion-avatar>
             <ion-avatar *ngIf="this.group.value.videoUrl == ''" item-left>
@@ -123,7 +147,7 @@
         <ion-list >
           <ion-item *ngIf="group.value.mediaFiles.length<=1">No Files.Please upload photo/video</ion-item>
           <!--<ion-item *ngFor="let file of medialist">-->
-          <ion-item >
+          <ion-item *ngIf="group.value.mediaFiles.length>1">
             <ion-slides  class="image-slider" loop="true" slidesPerView="5">
               <ion-slide *ngFor="let file of medialist">
                 <ion-avatar *ngIf="file.indexOf('images')!=-1" item-left>
@@ -142,20 +166,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row>
-      <ion-col>
-        <button ion-button icon-start block (click)="photoUpload()">
-          <ion-icon name="camera"></ion-icon>
-          Upload Photo
-        </button>
-      </ion-col>
-      <ion-col>
-        <button ion-button icon-start block (click)="videoUpload()">
-          <ion-icon name="images"></ion-icon>
-          Upload video
-        </button>
-      </ion-col>
-    </ion-row>
+
 
 
     <ion-row>

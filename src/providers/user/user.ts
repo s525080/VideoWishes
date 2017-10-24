@@ -32,6 +32,7 @@ export class UserProvider {
             //console.log("user created"+res.json());
             console.log("user created and"+JSON.stringify(res));
             resolve({ success: true,uid:this.afireauth.auth.currentUser.uid });
+
           }).catch((err) => {
             reject(err);
           })

@@ -34,6 +34,9 @@ export class WhatshappeningPage {
 
   ionViewWillEnter(){
     console.log('ion view will enter');
+    this.groupService.getAllGroupUsers().then((res)=>{
+      console.log('in gs'+JSON.stringify(res));
+    })
     //this.listItems = this.groupService.getGroups();
     //this.memberGroup = this.groupService.getGroups();
 

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {
   ActionSheetController, AlertController,
   FabContainer, ModalController, NavController, NavParams, Platform, PopoverController,
-  ViewController, Tabs, ToastController
+  ViewController, Tabs, ToastController, LoadingController
 } from 'ionic-angular';
 import {ChatsPage} from "../chats/chats";
 import {SettingsPage} from "../settings/settings";
@@ -19,6 +19,7 @@ import {AddmemberPage} from "../addmember/addmember";
 import {WhatshappeningPage} from "../whatshappening/whatshappening";
 import firebase from 'firebase';
 import {UserProvider} from "../../providers/user/user";
+import {MetaContact} from "../../models/interfaces/contact";
 
 /**
  * Generated class for the WhatsnewPage page.
@@ -34,17 +35,18 @@ import {UserProvider} from "../../providers/user/user";
 export class WhatsnewPage implements OnInit{
 
   mode = 'New';
-  selectOptions = ['select','Picnic','Birthday','Anniversary', 'Graduation'];
+  selectOptions = ['select','Surprise','Memories','Capsule'];
   chatGroupForm : FormGroup;
   grpMembers: string;
   myDate: string;
-  contactlist: any;
+  contactlist: any[];
+  FinalContactList:MetaContact[]=[];
+  subContactsList:MetaContact[]=[];
   selectedValue:any;
   token:any;
   // userID:any;
   currentDate = (new Date()).toISOString();
   opts = {
-    filter : "M",
     multiple: true,
     hasPhoneNumber:true,
     fields:  [ 'displayName', 'name' ]
@@ -54,9 +56,10 @@ export class WhatsnewPage implements OnInit{
               private actionController: ActionSheetController, private alertCtrl : AlertController,
               private contacts: Contacts,private cnt: Contact, public platform: Platform,
               public authService : AuthProvider,public popoverCtrl: PopoverController,
-              private userService:UserProvider,public toastCtrl: ToastController) {
+              private userService:UserProvider,public toastCtrl: ToastController,
+              public modalCtrl: ModalController,public loadingCtrl:LoadingController) {
 
-
+this.contactlist =[];
 
 
   }
@@ -97,6 +100,8 @@ export class WhatsnewPage implements OnInit{
     value['mediaFiles']= [''];
     value['finalVideo'] = '';
     value['groupMatchKey'] =groupUniqueKey;
+    value['role'] = 'Owner';
+    value['modifiedDate'] = this.currentDate;
     // let members = [];
     // let target = [];
     // if(value.members.length > 0){
@@ -115,8 +120,10 @@ export class WhatsnewPage implements OnInit{
     const creator:any = this.authService.getActiveUser().displayName;
     const owner:any = firebase.auth().currentUser.uid;
     console.log("type is"+value.type);
+    // this.groupService.addGroup(owner,creator,value.title,value.description,value.type,value.myDate,value.fromDate,value.toDate,value.members,value.target,
+    // value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey)
     this.groupService.addGroup(owner,creator,value.title,value.description,value.type,value.myDate,value.fromDate,value.toDate,value.members,value.target,
-    value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey)
+      value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey,value.role,value.modifiedDate)
       .subscribe(
         () => {
 
@@ -135,43 +142,53 @@ export class WhatsnewPage implements OnInit{
     t.select(3);
    // this.groupService.sendSms();
   }
+  OpenModal(){
 
+  }
   onAddNewMembers(){
+    let loader = this.loadingCtrl.create({
+      content: 'Please wait'
+    });
+    loader.present();
     this.contacts.find([ 'displayName', 'name' ],this.opts).then((contacts) => {
       this.contactlist=contacts;
-      const newContactAlert = this.alertCtrl.create({
-        title: 'contact',
-        message : this.contactlist,
-        buttons : [
-          {
-            text : ' Cancel',
-            role : 'cancel'
-          }
-        ]
-      })
-      // newContactAlert.present();
-      let finalContacts = this.contactlist;
-      this.navCtrl.push(AddmemberPage,{finalContacts});
 
-        let finalList = this.navParams.get('finalList');
-      for(let mem in finalList){
-        (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(mem));
-        const newContactAlert = this.alertCtrl.create({
-          title: 'contact',
-          message : mem,
-          buttons : [
-            {
-              text : ' Cancel',
-              role : 'cancel'
-            }
-          ]
-        })
-       // newContactAlert.present();
-      }
+      let finalContacts = this.contactlist;
+      console.log('final contacts list'+JSON.stringify(finalContacts));
+      finalContacts.sort();
+      console.log('final contacts list after sorting'+JSON.stringify(finalContacts));
+      loader.dismiss();
+      let contactsModal = this.modalCtrl.create(AddmemberPage,{data:finalContacts});
+      contactsModal.onDidDismiss(data => {
+        this.subContactsList = data;
+        console.log('final contacts list after selecting'+JSON.stringify(this.subContactsList));
+
+        console.log('final contact'+JSON.stringify(this.FinalContactList));
+        this.FinalContactList.concat(this.subContactsList);
+        console.log('final contacts list is'+JSON.stringify(this.FinalContactList));
+        for(let mem in this.subContactsList){
+          (<FormArray>this.chatGroupForm.get('members')).push(new FormControl(this.subContactsList[mem]));
+        }
+
+        console.log('members are'+JSON.stringify(this.chatGroupForm.get('members')));
+      });
+      contactsModal.present();
+
+
+      // this.navCtrl.push(AddmemberPage,{finalContacts});
+      //
+      //
+      //   let finalList = this.navParams.get('finalList');
+      // console.log('final contacts list after selecting'+JSON.stringify(finalList));
+      // this.FinalContactList.concat(finalList);
+
+
     }, (error) => {
       console.log(error);
     })
   }
+
+
   onAddMembers(){
     let contact: Contact = this.contacts.create();
 
