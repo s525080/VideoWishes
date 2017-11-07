@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.vvish.videowishes" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>MyApp</name>
+    <name>vvish</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
     <content src="index.html" />
@@ -93,7 +93,7 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
     </platform>
     <engine name="android" spec="^6.2.3" />
-    <engine name="ios" spec="^4.4.0" />
+    <engine name="ios" spec="~4.5.2" />
     <plugin name="cordova-plugin-console" spec="^1.0.5" />
     <plugin name="cordova-plugin-device" spec="^1.1.4" />
     <plugin name="cordova-plugin-splashscreen" spec="^4.0.3" />
@@ -123,13 +123,6 @@
         <variable name="PHOTOLIBRARY_USAGE_DESCRIPTION" value=" " />
     </plugin>
     <plugin name="cordova-plugin-http" spec="^1.2.0" />
-    <plugin name="cordova-plugin-ionic" spec="^1.1.8">
-        <variable name="APP_ID" value="fa4614b5" />
-        <variable name="CHANNEL_NAME" value="Master" />
-        <variable name="UPDATE_METHOD" value="background" />
-        <variable name="UPDATE_API" value="https://api.ionicjs.com" />
-        <variable name="MAX_STORE" value="2" />
-    </plugin>
     <plugin name="com-sarriaroman-photoviewer" spec="^1.1.10" />
     <plugin name="com.moust.cordova.videoplayer" spec="https://github.com/moust/cordova-plugin-videoplayer.git" />
     <plugin name="cordova-plugin-video-thumbnail" spec="^2.0.1" />

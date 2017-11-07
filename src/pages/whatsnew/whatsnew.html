@@ -44,17 +44,17 @@
         </ion-select>
       </ion-item>
 
-      <ion-item *ngIf="selectedValue !== 'Memories'">
+      <ion-item *ngIf="selectedValue !== 'Memories' && selectedValue !== 'Capsule'">
         <ion-label>Date</ion-label>
         <ion-datetime displayFormat="MMM DD, YYYY" pickerFormat="MMM/DD/YYYY" min={{currentDate}} max="2020-10-31" formControlName="myDate"></ion-datetime>
       </ion-item>
-      <ion-item *ngIf="selectedValue === 'Memories'">
+      <ion-item *ngIf="selectedValue === 'Memories' && selectedValue !== 'Capsule'">
         <ion-label>From Date</ion-label>
-        <ion-datetime displayFormat="MMM DD, YYYY" pickerFormat="MMM/DD/YYYY" min={{currentDate}} max="2020-10-31" formControlName="fromDate"></ion-datetime>
+        <ion-datetime displayFormat="MMM DD, YYYY HH:mm" pickerFormat="MMM/DD/YYYY HH:mm" min={{currentDate}} max="2020-10-31" formControlName="fromDate"></ion-datetime>
       </ion-item>
-      <ion-item *ngIf="selectedValue === 'Memories'">
+      <ion-item *ngIf="selectedValue === 'Memories' && selectedValue !== 'Capsule'">
         <ion-label>To Date</ion-label>
-        <ion-datetime displayFormat="MMM DD, YYYY" pickerFormat="MMM/DD/YYYY" min={{currentDate}} max="2020-10-31" formControlName="toDate"></ion-datetime>
+        <ion-datetime displayFormat="MMM DD, YYYY HH:mm" pickerFormat="MMM/DD/YYYY HH:mm" min={{currentDate}} max="2020-10-31" formControlName="toDate"></ion-datetime>
       </ion-item>
     </ion-list>
     <!--<button type="button" clear ion-button block (click)="onAddMembers()" >Add Members</button>-->

@@ -37,7 +37,7 @@
     "@ionic-native/social-sharing": "^4.1.0",
     "@ionic-native/splash-screen": "3.12.1",
     "@ionic-native/status-bar": "3.12.1",
-    "@ionic-native/streaming-media": "^4.3.1",
+    "@ionic-native/streaming-media": "^4.3.2",
     "@ionic-native/video-editor": "^4.3.1",
     "@ionic-native/video-player": "^4.3.1",
     "@ionic/cloud-angular": "^0.12.0",
@@ -45,10 +45,10 @@
     "angularfire2": "^4.0.0-rc.0",
     "cloudinary-core": "^2.3.0",
     "com-sarriaroman-photoviewer": "^1.1.10",
+    "com.hutchind.cordova.plugins.streamingmedia": "~0.1.4",
     "com.moust.cordova.videoplayer": "https://github.com/moust/cordova-plugin-videoplayer.git",
     "cordova-android": "^6.2.3",
-    "cordova-ios": "^4.4.0",
-    "cordova-plugin-add-swift-support": "^1.6.1",
+    "cordova-ios": "~4.5.2",
     "cordova-plugin-camera": "^2.4.1",
     "cordova-plugin-compat": "^1.1.0",
     "cordova-plugin-console": "^1.0.5",
@@ -60,7 +60,6 @@
     "cordova-plugin-filepath": "^1.0.2",
     "cordova-plugin-http": "^1.2.0",
     "cordova-plugin-image-picker": "^1.1.3",
-    "cordova-plugin-ionic": "^1.1.8",
     "cordova-plugin-media-capture": "^1.4.3",
     "cordova-plugin-splashscreen": "^4.0.3",
     "cordova-plugin-statusbar": "^2.2.2",
@@ -82,8 +81,7 @@
     "rxjs": "5.4.0",
     "sw-toolbox": "3.6.0",
     "video-stitch": "^1.4.0",
-    "zone.js": "0.8.12",
-    "com.hutchind.cordova.plugins.streamingmedia": "~0.1.4"
+    "zone.js": "0.8.12"
   },
   "devDependencies": {
     "@ionic/app-scripts": "2.0.2",
@@ -124,13 +122,6 @@
         "PHOTOLIBRARY_USAGE_DESCRIPTION": " "
       },
       "cordova-plugin-http": {},
-      "cordova-plugin-ionic": {
-        "APP_ID": "fa4614b5",
-        "CHANNEL_NAME": "Master",
-        "UPDATE_METHOD": "background",
-        "UPDATE_API": "https://api.ionicjs.com",
-        "MAX_STORE": "2"
-      },
       "com-sarriaroman-photoviewer": {},
       "com.moust.cordova.videoplayer": {},
       "cordova-plugin-video-thumbnail": {},

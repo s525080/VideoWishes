@@ -68,7 +68,7 @@ this.contactlist =[];
 
     this.mode = this.navParams.get('mode');
     this.initializeForm();
-
+console.log('current date is '+this.currentDate);
 
   }
 
@@ -116,7 +116,22 @@ this.contactlist =[];
     //     return { name: name , contactNumber : 1 }
     //   })
     // }
+    if(value.myDate ==null){
+      console.log('mydate is null');
+      value.myDate = value.toDate;
+      console.log('mydate uodate to'+value.myDate);
+    }
 
+    let contactInfo = {
+      'uid':firebase.auth().currentUser.uid,
+      'tel':'',
+      'displayName':this.authService.getActiveUser().displayName+'- Group Admin',
+      'photoUrl':'',
+      videoUrl:'',
+      mediaFiles:['']
+    };
+     value.members.push(contactInfo);
+     console.log('added owner contact');
     const creator:any = this.authService.getActiveUser().displayName;
     const owner:any = firebase.auth().currentUser.uid;
     console.log("type is"+value.type);
@@ -154,9 +169,14 @@ this.contactlist =[];
       this.contactlist=contacts;
 
       let finalContacts = this.contactlist;
-      console.log('final contacts list'+JSON.stringify(finalContacts));
-      finalContacts.sort();
+      //console.log('final contacts list'+JSON.stringify(finalContacts));
+      //finalContacts.sort();
+      // finalContacts.sort( function( a, b ) {
+      //   console.log('sorting..'+a.value.name.formatted+' and '+a.name.formatted);
+      //   return a.value.name.formatted < b.value.name.formatted ? -1 : a.value.name.formatted > b.value.name.formatted ? 1 : 0;
+      // });
       console.log('final contacts list after sorting'+JSON.stringify(finalContacts));
+
       loader.dismiss();
       let contactsModal = this.modalCtrl.create(AddmemberPage,{data:finalContacts});
       contactsModal.onDidDismiss(data => {
@@ -184,6 +204,7 @@ this.contactlist =[];
 
 
     }, (error) => {
+      loader.dismiss();
       console.log(error);
     })
   }

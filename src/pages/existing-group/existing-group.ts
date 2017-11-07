@@ -43,6 +43,7 @@ export class ExistingGroupPage implements OnInit{
   currentUser:any;
   nativepath:any;
   thumbnail:any;
+  private ApiToken = "c42gihQ8uqKMNdlzbYi3xYMiBJL5l2ROSrklrf2a";
   medialist:string[]=[];
   constructor(public navCtrl: NavController, public navParams: NavParams,public loadingCtrl:LoadingController,
               public camera:Camera,private mediaCapture: MediaCapture,public alertCtrl:AlertController,
@@ -77,9 +78,11 @@ console.log("user is"+this.currentUser);
 
   }
   onphotoClick(src:string){
+    console.log('src is'+src);
     this.photoViewer.show(src);
   }
   onvideoClick(src:string){
+    console.log('src is'+src);
     // this.videoPlayer.play(src).then(() => {
     //   console.log('video completed');
     // }).catch(err => {
@@ -282,7 +285,7 @@ console.log("user is"+this.currentUser);
                   loader.present();
 
 
-                  this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+                  this.groupservice.updateGroup(this.group.value.contacts,this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
                     url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo,photoKey).subscribe((res:any)=>{
                     let alert2 = this.alertCtrl.create({
                       title: 'in subscribe!',
@@ -297,31 +300,7 @@ console.log("user is"+this.currentUser);
                   let cameraImageSelector = document.getElementById('camera-image');
                   this.group.value.photoUrl = url;
                //   cameraImageSelector.setAttribute('src', url);
-                  //   .then((res:any) => {
-                  //
-                  //       let alert = this.alertCtrl.create({
-                  //         title: 'Updated!',
-                  //         subTitle: 'Your file has been uploaded!!!',
-                  //         buttons: ['OK']
-                  //       });
-                  //       alert.present();
-                  // })
 
-                  //   .then(() =>{
-                  //
-                  // });
-                  // this.userservice.updateimage(url).then((res: any) => {
-                  //   if (res.success) {
-                  //     let alert = this.alertCtrl.create({
-                  //       title: 'Updated!',
-                  //       subTitle: 'Your profile pic has been changed successfully!!!',
-                  //       buttons: ['OK']
-                  //     });
-                  //     alert.present();
-                  //
-                  //     //this.navCtrl.setRoot(TabsPage);
-                  //   }
-                  // });
 
                 }).catch((err) => {
                   let alert = this.alertCtrl.create({
@@ -382,7 +361,7 @@ console.log("user is"+this.currentUser);
                   loader.present();
 
 
-                  this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+                  this.groupservice.updateGroup(this.group.value.contacts,this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
                     url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo,photoKey).subscribe((res:any)=>{
                     let alert2 = this.alertCtrl.create({
                       title: 'in subscribe!',
@@ -500,7 +479,7 @@ console.log("user is"+this.currentUser);
                             buttons: ['OK']
                           });
                           alert2.present();
-                          this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+                          this.groupservice.updateGroup(this.group.value.contacts,this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
                             this.group.value.photoUrl,url,this.group.value.mediaFiles,this.group.value.finalVideo,videoKey).subscribe((res:any)=>{
                             let alert2 = this.alertCtrl.create({
                               title: 'in subscribe!',
@@ -566,7 +545,7 @@ console.log("user is"+this.currentUser);
               });
               alert3.present();
 
-              this.groupservice.updateGroup(this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+              this.groupservice.updateGroup(this.group.value.contacts,this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
                 this.group.value.photoUrl,res,this.group.value.mediaFiles,this.group.value.finalVideo,videoKey).subscribe((res:any)=>{
                 let alert2 = this.alertCtrl.create({
                   title: 'in subscribe!',
@@ -602,6 +581,189 @@ console.log("user is"+this.currentUser);
 
   }
 
+  UploadPhotos(){
+    let photoKey:string = 'p';
+
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Select Image Source',
+      buttons: [
+        {
+          text: 'Take Picture',
+          handler: () => {
+            let options = {
+              sourceType: this.camera.PictureSourceType.CAMERA,
+              mediaType: this.camera.MediaType.ALLMEDIA,
+              destinationType: this.camera.DestinationType.DATA_URL
+            }
+            let loader = this.loadingCtrl.create({
+              content: 'Please wait'
+            })
+            loader.present();
+
+            this.camera.getPicture(options).then((imageData: any) => {
+              // imageData is either a base64 encoded string or a file URI
+              loader.dismiss();
+              let image = "data:image/jpeg;base64," + imageData;
+
+              let url = image;
+              let storageRef = firebase.storage().ref('/images');
+              // Create a timestamp as filename
+              const filename = Math.floor(Date.now() / 1000);
+
+              // Create a reference to 'images/todays-date.jpg'
+              let UniqueKey = Math.floor(Math.random()*8+1)+Math.random().toString().slice(2,10);
+              const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId+"/"+UniqueKey);
+
+
+              imageRef.putString(url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
+
+                imageRef.getDownloadURL().then((url) => {
+
+                  //this.group.value.mediaFiles.push(url);
+                  let loader = this.loadingCtrl.create({
+                    content: 'Please wait'
+                  });
+                  loader.present();
+
+
+                  this.groupservice.updateNonSurpriseGroup(this.group.value.contacts,this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+                    url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo).subscribe((res:any)=>{
+                    let alert2 = this.alertCtrl.create({
+                      title: 'in subscribe!',
+                      subTitle: 'res is'+res.json(),
+                      buttons: ['OK']
+                    });
+                    alert2.present();
+                    loader.dismiss();
+                  })
+                  loader.dismiss();
+
+                  let cameraImageSelector = document.getElementById('camera-image');
+                  this.group.value.photoUrl = url;
+
+
+                }).catch((err) => {
+                  let alert = this.alertCtrl.create({
+                    title: 'Failed!',
+                    subTitle: 'Your profile pic was not changed!!!',
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                });
+              }).catch((err) => {
+
+              })
+
+
+
+            }, (err) => {
+              loader.dismissAll();
+              // Handle error
+            });
+
+          }
+        },
+        {
+          text: 'Choose from gallery',
+          handler: () => {
+
+            let options = {
+              sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
+              mediaType: this.camera.MediaType.PICTURE,
+              destinationType: this.camera.DestinationType.DATA_URL
+            }
+            let loader = this.loadingCtrl.create({
+              content: 'Please wait'
+            })
+            loader.present();
+
+            this.camera.getPicture(options).then((imageData: any) => {
+              // imageData is either a base64 encoded string or a file URI
+              loader.dismiss();
+              let image = "data:image/jpeg;base64," + imageData;
+
+              let url = image;
+              let storageRef = firebase.storage().ref('/images');
+              // Create a timestamp as filename
+              const filename = Math.floor(Date.now() / 1000);
+
+              // Create a reference to 'images/todays-date.jpg'
+
+              const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId);
+
+
+              imageRef.putString(url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
+
+                storageRef.child(firebase.auth().currentUser.uid).child(this.groupId).getDownloadURL().then((url) => {
+                  let loader = this.loadingCtrl.create({
+                    content: 'Please wait'
+                  });
+                  loader.present();
+
+
+                  this.groupservice.updateNonSurpriseGroup(this.group.value.contacts,this.currentUser,this.groupId,this.group.value.groupMatchKey,this.group.value.owner,
+                    url,this.group.value.videoUrl,this.group.value.mediaFiles,this.group.value.finalVideo).subscribe((res:any)=>{
+                    let alert2 = this.alertCtrl.create({
+                      title: 'in subscribe!',
+                      subTitle: 'res is'+res.json(),
+                      buttons: ['OK']
+                    });
+                    alert2.present();
+                    loader.dismiss();
+                  })
+                  loader.dismiss();
+                  let cameraImageSelector = document.getElementById('camera-image');
+                  this.group.value.photoUrl = url;
+                  //  cameraImageSelector.setAttribute('src', url);
+
+
+                }).catch((err) => {
+                  let alert = this.alertCtrl.create({
+                    title: 'Failed!',
+                    subTitle: 'Your profile pic was not changed!!!',
+                    buttons: ['OK']
+                  });
+                  alert.present();
+                });
+              }).catch((err) => {
+
+              })
+
+
+
+            }, (err) => {
+              loader.dismiss();
+              // Handle error
+            });
+
+
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+
+  videoGenerate(){
+
+
+    //let body = this.group.mediaFiles;
+
+    let body = ["abc.com","def.com","cef.com"];
+    this.http
+      .post('http://192.168.1.32:8080/generateVideo/'+this.currentUser+'/'+this.groupId,body)
+      .map((res: Response) => {
+
+        return res.json();
+      }).subscribe((res)=>{
+           console.log('success' + res);
+    });
+  }
 
 
 

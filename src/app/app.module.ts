@@ -58,6 +58,8 @@ import {FileTransfer} from "@ionic-native/file-transfer";
 import {HTTP} from "@ionic-native/http";
 import {PhotoViewer} from "@ionic-native/photo-viewer";
 import {VideoPlayer} from "@ionic-native/video-player";
+import {PasswordresetPage} from "../pages/passwordreset/passwordreset";
+import { TabStateServiceProvider } from '../providers/tab-state-service/tab-state-service';
 
 
 @NgModule({
@@ -83,7 +85,8 @@ import {VideoPlayer} from "@ionic-native/video-player";
     AddmemberPage,
     FriendPipe,
     PersonalchatPage,
-    GroupPipe
+    GroupPipe,
+    PasswordresetPage
 
   ],
   imports: [
@@ -114,7 +117,8 @@ import {VideoPlayer} from "@ionic-native/video-player";
     NewGroupPage,
     EventModalPage,
     AddmemberPage,
-    PersonalchatPage
+    PersonalchatPage,
+    PasswordresetPage
   ],
   providers: [
     StatusBar,
@@ -144,7 +148,8 @@ import {VideoPlayer} from "@ionic-native/video-player";
     HTTP,
     PhotoViewer,
     VideoPlayer,
-    StreamingMedia
+    StreamingMedia,
+    TabStateServiceProvider
   ]
 })
 export class AppModule {}

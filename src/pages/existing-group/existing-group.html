@@ -85,13 +85,19 @@
     </ion-row>
 
     <ion-row>
-      <ion-col>
+      <ion-col *ngIf="group.value.type !='Capsule'&& group.value.type !='Memories'">
         <button ion-button icon-start block (click)="photoUpload()">
           <ion-icon name="camera"></ion-icon>
           Upload Photo
         </button>
       </ion-col>
-      <ion-col>
+      <ion-col *ngIf="group.value.type =='Capsule' || group.value.type =='Memories'">
+        <button ion-button icon-start block (click)="UploadPhotos()">
+          <ion-icon name="camera"></ion-icon>
+          Upload Photos
+        </button>
+      </ion-col>
+      <ion-col *ngIf="group.value.type !='Capsule'&& group.value.type !='Memories'">
         <button ion-button icon-start block (click)="videoUpload()">
           <ion-icon name="images"></ion-icon>
           Upload video
@@ -99,7 +105,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row >
+    <ion-row *ngIf="group.value.type !='Capsule'&& group.value.type !='Memories'">
       <ion-col >
         <ion-label>Uploaded Media</ion-label>
         <ion-list >
@@ -141,7 +147,7 @@
       <!--</ion-col>-->
     </ion-row>
 
-    <ion-row *ngIf="group.value.owner == currentUser">
+    <ion-row *ngIf="group.value.owner == currentUser || group.value.type =='Memories'|| group.value.type =='Capsule'">
       <ion-col >
         <ion-label>Uploaded Files of all members</ion-label>
         <ion-list >
@@ -151,10 +157,10 @@
             <ion-slides  class="image-slider" loop="true" slidesPerView="5">
               <ion-slide *ngFor="let file of medialist">
                 <ion-avatar *ngIf="file.indexOf('images')!=-1" item-left>
-                  <img src= {{file}}>
+                  <img src= {{file}} (click)="onphotoClick(file)">
                 </ion-avatar>
                 <ion-avatar *ngIf="file.indexOf('videos')!=-1" item-left>
-                  <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(this.group.value.videoUrl)">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(file)">
                 </ion-avatar>
               </ion-slide>
             </ion-slides>
@@ -180,6 +186,16 @@
           icon-only
           (click)="onDeleteGroup()" color="danger"><ion-icon name="trash"></ion-icon></button>
       </ion-col>
+    </ion-row>
+    <ion-row>
+
+        <ion-col *ngIf="group.value.type =='Capsule' " text-center>
+          <button ion-button icon-start block (click)="videoGenerate()">
+            <ion-icon name="images"></ion-icon>
+            Generate video
+          </button>
+        </ion-col>
+
     </ion-row>
   </ion-grid>
 

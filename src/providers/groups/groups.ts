@@ -22,7 +22,9 @@ export class GroupsProvider {
   private chatGroups: MetaGroup[] =[];
   private metaGroup : MetaGroup ;
   private groupIDOwner:string;
-  firegroup = firebase.database().ref('/groups');
+  private ownerContacts: MetaContact[]=[];
+  private ApiToken = "c42gihQ8uqKMNdlzbYi3xYMiBJL5l2ROSrklrf2a";
+  firegroup = firebase.database().ref('/Groups');
 
   constructor(public http: Http,public authService:AuthProvider,
               public alertCtrl:AlertController,private sms: SMS,private userService:UserProvider) {
@@ -95,10 +97,10 @@ export class GroupsProvider {
             let memGroup = new MetaGroup(owner,creator,title,description,type,date,fromdate,todate,contacts,target,photoUrl,
               videoUrl, mediaFiles,finalVideo,groupMatchKey,'Participant',modifiedDate) ;
             const token3 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
-            let url = 'https://vvish-91286.firebaseio.com/Groups/'+ userarray[user].uid + '/GroupsCreated.json?auth='+token3;
+            let url = 'https://vvish-new.firebaseio.com/Groups/'+ userarray[user].uid + '.json?auth='+this.ApiToken;
             console.log('adding group woht url '+url);
             this.http
-              .post('https://vvish-91286.firebaseio.com/Groups/'+ userarray[user].uid + '/GroupsCreated.json?auth='+token3,memGroup)
+              .post('https://vvish-new.firebaseio.com/Groups/'+ userarray[user].uid + '.json?auth='+this.ApiToken,memGroup)
               .map((res: Response) => {
 
                 return res.json();
@@ -132,7 +134,7 @@ export class GroupsProvider {
           let memGroup = new MetaGroup(owner,creator,title,description,type,date,fromdate,todate,contacts,target,photoUrl,
             videoUrl, mediaFiles,finalVideo,groupMatchKey,'Participant',modifiedDate) ;
           this.http
-            .post('https://vvish-91286.firebaseio.com/Groups/'+''+ phoneNum + '/GroupsCreated.json?auth='+token3,memGroup)
+            .post('https://vvish-new.firebaseio.com/Groups/'+''+ phoneNum + '.json?auth='+this.ApiToken,memGroup)
             .map((res: Response) => {
 
               return res.json();
@@ -154,7 +156,7 @@ export class GroupsProvider {
 
     const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
     return this.http
-      .post('https://vvish-91286.firebaseio.com/Groups/'+ userId + '/GroupsCreated.json?auth='+token2,this.metaGroup)
+      .post('https://vvish-new.firebaseio.com/Groups/'+ userId + '.json?auth='+this.ApiToken,this.metaGroup)
       .map((res: Response) => {
         return res.json();
       })
@@ -204,7 +206,7 @@ export class GroupsProvider {
    // console.log("heyy "+token);
     console.log(token2);
     return this.http
-      .get('https://vvish-91286.firebaseio.com/Groups/'+ userId + '/GroupsCreated.json?auth='+token2)
+      .get('https://vvish-new.firebaseio.com/Groups/'+ userId + '.json?auth='+this.ApiToken)
       .map((res: Response) => {
       console.log("response is"+res);
         const chatGroup: MetaGroup[] = res.json() ? res.json() : [];
@@ -219,6 +221,8 @@ export class GroupsProvider {
           }
 
         }
+       // chatGroup.reverse();
+      //   console.log('reverse chat group is'+JSON.stringify(chatGroup));
         return chatGroup;
 
       })
@@ -257,7 +261,7 @@ export class GroupsProvider {
     return promise;
   }
 
-  updateGroup(currentUser:string,groupId:string ,groupMatchKey:string,owner: string,photoUrl:string, videoUrl:string, mediaFiles:string[],finalVideo:string,key:string){
+  updateGroup(contacts:MetaContact[],currentUser:string,groupId:string ,groupMatchKey:string,owner: string,photoUrl:string, videoUrl:string, mediaFiles:string[],finalVideo:string,key:string){
 
     let alert = this.alertCtrl.create({
       title: 'Photo has been uploaded',
@@ -267,13 +271,24 @@ export class GroupsProvider {
     alert.present();
     let currentDate = (new Date()).toISOString();
     const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
+
+    //updating contacts
+    for(let cnt in contacts) {
+      if (contacts[cnt].uid == currentUser) {
+        contacts[cnt].photoUrl = photoUrl;
+        contacts[cnt].videoUrl = videoUrl;
+      }
+    }
+
     let body = {
+      'contacts':contacts,
       'photoUrl':photoUrl,
       'videoUrl':videoUrl,
       'mediaFiles':mediaFiles,
       'finalVideo':finalVideo,
       'modifiedDate':currentDate
     }
+
     this.getOwnerGroupId(owner,groupMatchKey);
 
     let alert2 = this.alertCtrl.create({
@@ -292,8 +307,13 @@ export class GroupsProvider {
     if(key=='v' && videoUrl!='' ){
       mediaFiles.push(videoUrl);
     }
+
     //mediaFiles.push(photoUrl);
+
+
+
     let ownerBody = {
+      'contacts':contacts,
       'mediaFiles':mediaFiles,
     }
 
@@ -305,24 +325,13 @@ export class GroupsProvider {
     // alert4.present();
 
     return this.http
-      .patch('https://vvish-91286.firebaseio.com/Groups/'+ currentUser + '/GroupsCreated/'+groupId+'.json?auth='+token2,body)
+      .patch('https://vvish-new.firebaseio.com/Groups/'+ currentUser + '/'+groupId+'.json?auth='+this.ApiToken,body)
       .map((res: Response) => {
-        // let alert3 = this.alertCtrl.create({
-        //   title: 'success ',
-        //   subTitle: 'media ',
-        //   buttons: ['OK']
-        // });
-        // alert3.present();
+
          this.http
-          .patch('https://vvish-91286.firebaseio.com/Groups/'+ owner + '/GroupsCreated/'+this.groupIDOwner+'.json?auth='+token2,ownerBody)
+          .patch('https://vvish-new.firebaseio.com/Groups/'+ owner + '/'+this.groupIDOwner+'.json?auth='+this.ApiToken,ownerBody)
           .map((res: Response) => {
 
-            // let alert2 = this.alertCtrl.create({
-            //   title: 'owner success ',
-            //   subTitle: 'media ',
-            //   buttons: ['OK']
-            // });
-            // alert2.present();
 
             return res.json();
           }).subscribe((res:any)=>{
@@ -338,13 +347,80 @@ export class GroupsProvider {
 
   }
 
+  updateNonSurpriseGroup(contacts:MetaContact[],currentUser:string,groupId:string ,groupMatchKey:string,owner: string,photoUrl:string, videoUrl:string, mediaFiles:string[],finalVideo:string){
+
+    let alert = this.alertCtrl.create({
+      title: 'Photo has been uploaded',
+      subTitle: 'photo url is'+photoUrl+" "+groupId,
+      buttons: ['OK']
+    });
+    alert.present();
+    let currentDate = (new Date()).toISOString();
+
+    mediaFiles.push(photoUrl);
+    console.log('pushed photo file '+mediaFiles);
+    //updating contacts
+    let contactNumber:any;
+    for(let cnt in contacts) {
+      if (contacts[cnt].uid == currentUser) {
+        contacts[cnt].mediaFiles = mediaFiles;
+        contactNumber = cnt;
+         console.log('contact key is'+cnt);
+      }
+    }
+
+    let body = {
+      'contacts':contacts,
+      'photoUrl':photoUrl,
+      'mediaFiles':mediaFiles,
+      'finalVideo':finalVideo,
+      'modifiedDate':currentDate
+    }
+
+    this.getOwnerGroupId(owner,groupMatchKey);
+    this.getOwnerContacts(owner,groupMatchKey);
+
+
+
+    return this.http
+      .patch('https://vvish-new.firebaseio.com/Groups/'+ currentUser + '/'+groupId+'.json?auth='+this.ApiToken,body)
+      .map((res: Response) => {
+   //if not equal to owner
+        if(currentUser != owner){
+          for(let cnt in this.ownerContacts) {
+            if (this.ownerContacts[cnt].uid == currentUser) {
+              this.ownerContacts[cnt].mediaFiles = mediaFiles;
+            }
+          }
+          console.log('contacts before updating'+JSON.stringify(this.ownerContacts));
+          let ownerContactsBody = {
+            'contacts':this.ownerContacts
+          }
+          this.http
+            .patch('https://vvish-new.firebaseio.com/Groups/'+ owner + '/'+this.groupIDOwner+'.json?auth='+this.ApiToken,ownerContactsBody)
+            .map((res: Response) => {
+
+
+              return res.json();
+            }).subscribe((res:any)=>{
+
+          })
+
+        }
+
+        return res.json();
+      })
+
+
+  }
+
   getOwnerGroupId(owner:string,groupMatchKey:string){
 
-    const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
+
      console.log("heyy "+owner);
      let groupID:any;
       this.http
-      .get('https://vvish-91286.firebaseio.com/Groups/'+owner+'/GroupsCreated.json?auth='+token2)
+      .get('https://vvish-new.firebaseio.com/Groups/'+owner+'.json?auth='+this.ApiToken)
       .map((res: Response) => {
         console.log("response is"+res);
         let chatGroup: MetaGroup[] = res.json() ? res.json() : [];
@@ -373,9 +449,40 @@ export class GroupsProvider {
 return this.groupIDOwner;
   }
 
-  // updateGroup2(index : number , owner:string, creator:string,title: string,description:string, type : string ,date: string,fromdate:string,todate:string, contacts:Contact[],target: Contact[],photoUrl:string, videoUrl:string, mediaFiles:string[]){
-  //   this.chatGroups[index] =  new MetaGroup(owner,creator,title,description,type,date,fromdate,todate,contacts,target,photoUrl, videoUrl, mediaFiles);
-  // }
+  getOwnerContacts(owner:string,groupMatchKey:string){
+
+    const token2 = 'MYi72wQwEqT7iMXJiBTBXUEzaL3Cr2ezKqDwnUIM';
+    console.log("heyy "+owner);
+    let groupID:any;
+    this.http
+      .get('https://vvish-new.firebaseio.com/Groups/'+owner+'.json?auth='+this.ApiToken)
+      .map((res: Response) => {
+        console.log("response is"+res);
+        let chatGroup: MetaGroup[] = res.json() ? res.json() : [];
+        // console.log('chat group is'+JSON.stringify(chatGroup));
+        for (let member  in chatGroup) {
+          //console.log("member is "+JSON.stringify(chatGroup[member]));
+          // console.log(JSON.stringify(member));
+          if (chatGroup[member].owner == owner && chatGroup[member].groupMatchKey == groupMatchKey)
+          {
+           this.ownerContacts = chatGroup[member].contacts;
+            console.log('contact is '+JSON.stringify(this.ownerContacts));
+            return this.ownerContacts;
+          }else {
+            console.log('in else');
+          }
+
+        }
+
+      }).subscribe((res:any)=>{
+      console.log('success')
+      //console.log('success' +res.json());
+
+    })
+
+    return this.ownerContacts;
+  }
+
   removeGroup(index: number){
     this.chatGroups.splice(index,1);
   }

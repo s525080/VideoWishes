@@ -12,6 +12,7 @@ import {AlertController} from "ionic-angular";
 @Injectable()
 export class UserProvider {
   firedata = firebase.database().ref('/users');
+  private ApiToken = "c42gihQ8uqKMNdlzbYi3xYMiBJL5l2ROSrklrf2a";
   constructor(public afireauth: AngularFireAuth,private alertCtrl:AlertController) {
   }
 
@@ -70,6 +71,7 @@ export class UserProvider {
         //   buttons: ['OK']
         // });
         // alert.present();
+
         firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({
           code:user.code,
           displayName: this.afireauth.auth.currentUser.displayName,
@@ -79,6 +81,7 @@ export class UserProvider {
         }).then(() => {
           resolve({ success: true });
         }).catch((err) => {
+          console.log('error');
           reject(err);
         })
       }).catch((err) => {

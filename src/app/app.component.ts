@@ -34,15 +34,22 @@ export class MyApp {
 
 
     // Initialize Firebase
+    // var config = {
+    //   apiKey: "AIzaSyBR6YAg73tcHZw8t7FI4qJYl5eT6IvL2gM",
+    //   authDomain: "vvish-91286.firebaseapp.com",
+    //   databaseURL: "https://vvish-91286.firebaseio.com",
+    //   projectId: "vvish-91286",
+    //   storageBucket: "vvish-91286.appspot.com",
+    //   messagingSenderId: "186763057808"
+    // };
     var config = {
-      apiKey: "AIzaSyBR6YAg73tcHZw8t7FI4qJYl5eT6IvL2gM",
-      authDomain: "vvish-91286.firebaseapp.com",
-      databaseURL: "https://vvish-91286.firebaseio.com",
-      projectId: "vvish-91286",
-      storageBucket: "vvish-91286.appspot.com",
-      messagingSenderId: "186763057808"
+      apiKey: "AIzaSyDQHPtMkozUS6wMcGcXescN7px1w-3GDlQ",
+      authDomain: "vvish-new.firebaseapp.com",
+      databaseURL: "https://vvish-new.firebaseio.com",
+      projectId: "vvish-new",
+      storageBucket: "vvish-new.appspot.com",
+      messagingSenderId: "646079379995"
     };
-
      firebase.initializeApp(config);
     firebase.auth().onAuthStateChanged(user => {
 if(user){
