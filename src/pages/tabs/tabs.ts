@@ -43,6 +43,8 @@ export class TabsPage implements OnInit{
   nativepath :any;
   activeGroup:MetaGroup;
   groupId:string;
+  currentDate = (new Date()).toString();
+  minDate = this.formatDate(this.currentDate);
   public states: { [s: string]: any } = {};
 
   constructor(public navCtrl: NavController, public navParams: NavParams,private tabStateService:TabStateServiceProvider,
@@ -61,25 +63,45 @@ this.checkCapsuleCount();
     console.log('ionViewDidLoad TabsPage');
   }
 
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year,month, day].join('-');
+  }
+
   checkCapsuleCount(){
     this.groupService.getGroups().subscribe(data => {
       console.log('final length is' + JSON.stringify(data));
+
       let count = 0;
       for(let mem in data){
+        console.log(this.currentDate);
+        console.log(this.minDate);
+        console.log(data[mem].todate);
         if(data[mem].type == 'Memories'){
-          count++;
-          this.activeGroup = data[mem];
-          this.groupId = mem;
-          console.log('groupId is '+mem);
 
+          let formattedTodate = this.formatDate(data[mem].todate);
+          console.log(formattedTodate);
+          if(this.minDate == formattedTodate){
+            count++;
+            if(count == 1){
+              this.activeGroup = data[mem];
+            }
+
+          }
+           this.groupId = mem;
+           console.log('groupId is '+mem);
         }
       }
-      if(count == 1){
-        // this.camera.enabled = true;
 
-        // this.states["picnicCamera"] = true;
-      }
       console.log('count is'+count);
+      console.log('active group  is'+this.activeGroup);
 
 
     });
@@ -92,7 +114,8 @@ console.log("in camera "+this.groupId);
       mediaType: this.camera.MediaType.ALLMEDIA,
       destinationType: this.camera.DestinationType.DATA_URL,
       quality : 95,
-      saveToPhotoAlbum: true
+      saveToPhotoAlbum: true,
+      correctOrientation: true,
     }).then((imageData) => {
         let loader = this.loadingCtrl.create({
           content: 'Please wait'
@@ -103,17 +126,15 @@ console.log("in camera "+this.groupId);
 
         let storageRef = firebase.storage().ref('/images');
 
-        const imageRef = storageRef.child(firebase.auth().currentUser.uid);
-        imageRef.putString(imageurl, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
+      let UniqueKey = Math.floor(Math.random()*8+1)+Math.random().toString().slice(2,10);
+      const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId+"/"+UniqueKey);
 
 
+      imageRef.putString(imageurl, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
 
-          storageRef.child(firebase.auth().currentUser.uid).getDownloadURL().then((url) => {
-
+        imageRef.getDownloadURL().then((url) => {
 
            // this.activeGroup.mediaFiles.push(url);
-
-
 
             this.groupService.updateNonSurpriseGroup(this.activeGroup.contacts,this.currentUser,this.groupId,this.activeGroup.groupMatchKey,this.activeGroup.owner,
               url,this.activeGroup.videoUrl,this.activeGroup.mediaFiles,this.activeGroup.finalVideo).subscribe((res:any)=>{

@@ -13,6 +13,9 @@
 
 
 <ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-grid>
     <ion-row>
 
@@ -20,7 +23,7 @@
         <ion-list detail-none >
           <ion-item>
             <h2>Event Details</h2>
-            <ion-note>{{group.value.description}}</ion-note>
+            <ion-note (click) = "showLongToast(group.value.description)">{{group.value.description}}</ion-note>
           </ion-item>
           <ion-item>
             <h2>Event Date</h2>
@@ -30,12 +33,28 @@
             <h2>Event Type</h2>
             <ion-note>{{group.value.type}}</ion-note>
           </ion-item>
+          <ion-item *ngIf="group.value.type == 'Memories'">
+            <h2>Event Location</h2>
+            <ion-note (click) = "showLongToast(group.value.place)">{{group.value.place}}</ion-note>
+          </ion-item>
         </ion-list>
 
 
 
 
 
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="group.value.finalVideo !=''">
+      <ion-col >
+        <ion-label>Generated Final Video</ion-label>
+        <ion-list >
+          <ion-item >
+            <ion-avatar>
+              <img src="https://firebasestorage.googleapis.com/v0/b/vvish-new.appspot.com/o/images%2Fvideo-placeholder.png?alt=media&token=bb0025b2-e4e1-4533-9f94-d7d5bdfb6e12" (click)="onvideoClick(this.group.value.finalVideo)">
+            </ion-avatar>
+          </ion-item>
+        </ion-list>
       </ion-col>
     </ion-row>
     <ion-row >
@@ -85,7 +104,7 @@
     </ion-row>
 
     <ion-row>
-      <ion-col *ngIf="group.value.type !='Capsule'&& group.value.type !='Memories'">
+      <ion-col *ngIf="group.value.type !=='Capsule'&& group.value.type !=='Memories'">
         <button ion-button icon-start block (click)="photoUpload()">
           <ion-icon name="camera"></ion-icon>
           Upload Photo
@@ -123,7 +142,7 @@
               <img  src="http://www.banamalon.net/wiki/images/b/b9/Icon_my_photo_frame_wp8.png">
             </ion-avatar>
             <ion-avatar item-left *ngIf="this.group.value.videoUrl != ''" >
-              <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(this.group.value.videoUrl)">
+              <img src="https://firebasestorage.googleapis.com/v0/b/vvish-new.appspot.com/o/images%2Fvideo-placeholder.png?alt=media&token=bb0025b2-e4e1-4533-9f94-d7d5bdfb6e12" (click)="onvideoClick(this.group.value.videoUrl)">
             </ion-avatar>
           </ion-item>
         </ion-list>
@@ -149,7 +168,8 @@
 
     <ion-row *ngIf="group.value.owner == currentUser || group.value.type =='Memories'|| group.value.type =='Capsule'">
       <ion-col >
-        <ion-label>Uploaded Files of all members</ion-label>
+        <ion-label *ngIf="group.value.type =='Memories'">Uploaded Photos</ion-label>
+        <ion-label *ngIf="group.value.type !='Memories'">Uploaded Files of all members</ion-label>
         <ion-list >
           <ion-item *ngIf="group.value.mediaFiles.length<=1">No Files.Please upload photo/video</ion-item>
           <!--<ion-item *ngFor="let file of medialist">-->
@@ -160,7 +180,7 @@
                   <img src= {{file}} (click)="onphotoClick(file)">
                 </ion-avatar>
                 <ion-avatar *ngIf="file.indexOf('videos')!=-1" item-left>
-                  <img src="https://firebasestorage.googleapis.com/v0/b/vvish-91286.appspot.com/o/images%2Fvideo_thumbnail.png?alt=media&token=e2390388-7f38-4c7c-9f80-5a5a91127fd3" (click)="onvideoClick(file)">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/vvish-new.appspot.com/o/images%2Fvideo-placeholder.png?alt=media&token=bb0025b2-e4e1-4533-9f94-d7d5bdfb6e12" (click)="onvideoClick(file)">
                 </ion-avatar>
               </ion-slide>
             </ion-slides>
@@ -177,14 +197,16 @@
 
     <ion-row>
       <ion-col text-center>
-        <button
-          ion-button
-          icon-only
-          (click)="onEditGroup()" color="secondary"><ion-icon name="create"></ion-icon></button>
-        <button
-          ion-button
-          icon-only
-          (click)="onDeleteGroup()" color="danger"><ion-icon name="trash"></ion-icon></button>
+        <!--<button-->
+          <!--ion-button-->
+          <!--icon-only-->
+          <!--(click)="onEditGroup()" color="secondary"><ion-icon name="create"></ion-icon></button>-->
+        <!--<button-->
+          <!--ion-button-->
+          <!--icon-only-->
+          <!--(click)="onDeleteGroup()" color="danger"><ion-icon name="trash"></ion-icon></button>-->
+        <button *ngIf="group.value.owner == currentUser" ion-button color="danger" (click)="onDeleteGroup()"  >Delete Group</button>
+
       </ion-col>
     </ion-row>
     <ion-row>

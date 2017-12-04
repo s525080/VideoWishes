@@ -20,6 +20,9 @@ import {WhatshappeningPage} from "../whatshappening/whatshappening";
 import firebase from 'firebase';
 import {UserProvider} from "../../providers/user/user";
 import {MetaContact} from "../../models/interfaces/contact";
+import {AutocompletePage} from "../autocomplete/autocomplete";
+import * as moment from "moment";
+import _date = moment.unitOfTime._date;
 
 /**
  * Generated class for the WhatsnewPage page.
@@ -35,6 +38,7 @@ import {MetaContact} from "../../models/interfaces/contact";
 export class WhatsnewPage implements OnInit{
 
   mode = 'New';
+  location:any;
   selectOptions = ['select','Surprise','Memories','Capsule'];
   chatGroupForm : FormGroup;
   grpMembers: string;
@@ -45,7 +49,29 @@ export class WhatsnewPage implements OnInit{
   selectedValue:any;
   token:any;
   // userID:any;
-  currentDate = (new Date()).toISOString();
+  currentDate = (new Date()).toString();
+  minDate = this.formatDate(this.currentDate);
+  Maxdate: Date = new Date();
+
+
+  getMaxDate(){
+    this.Maxdate.setDate( this.Maxdate.getDate() + 7 );
+    this.formatDate(this.currentDate);
+  }
+
+
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year,month, day].join('-');
+  }
+  //currentDate = (new Date()).toUTCString();
   opts = {
     multiple: true,
     hasPhoneNumber:true,
@@ -60,7 +86,7 @@ export class WhatsnewPage implements OnInit{
               public modalCtrl: ModalController,public loadingCtrl:LoadingController) {
 
 this.contactlist =[];
-
+    //this.getMaxDate();
 
   }
 
@@ -69,7 +95,7 @@ this.contactlist =[];
     this.mode = this.navParams.get('mode');
     this.initializeForm();
 console.log('current date is '+this.currentDate);
-
+console.log(this.minDate);
   }
 
 
@@ -77,6 +103,7 @@ console.log('current date is '+this.currentDate);
     this.chatGroupForm = new FormGroup({
       'title' : new FormControl(null,Validators.required),
       'description' : new FormControl(null,Validators.required),
+      'place':new FormControl(null),
       'type' : new FormControl('select',Validators.required),
       'myDate' : new FormControl(null),
       'fromDate' : new FormControl(null),
@@ -87,7 +114,15 @@ console.log('current date is '+this.currentDate);
   }
 
 
-
+  showAddressModal () {
+    let modal = this.modalCtrl.create(AutocompletePage);
+    let me = this;
+    modal.onDidDismiss(data => {
+      this.location = data;
+      console.log('place is'+this.location);
+    });
+    modal.present();
+  }
 
   onSubmit(){
     console.log(this.chatGroupForm);
@@ -102,24 +137,22 @@ console.log('current date is '+this.currentDate);
     value['groupMatchKey'] =groupUniqueKey;
     value['role'] = 'Owner';
     value['modifiedDate'] = this.currentDate;
-    // let members = [];
-    // let target = [];
-    // if(value.members.length > 0){
-    //   members = value.members.map(name => {
-    //     return { name: name , contactNumber : 1 }
-    //   })
-    //
-    // }
-    //
-    // if(value.target.length > 0){
-    //   target = value.target.map(name => {
-    //     return { name: name , contactNumber : 1 }
-    //   })
-    // }
+
+    if(value.toDate == null){
+      value['toDate'] = value.myDate;
+    }
+    if(value.fromDate ==null){
+      value.fromDate = value.myDate;
+    }
     if(value.myDate ==null){
       console.log('mydate is null');
       value.myDate = value.toDate;
       console.log('mydate uodate to'+value.myDate);
+    }
+    if(value.type == 'Capsule'){
+      value['toDate'] = this.currentDate;
+      value.fromDate = this.currentDate;
+      value.myDate = this.currentDate;
     }
 
     let contactInfo = {
@@ -135,10 +168,14 @@ console.log('current date is '+this.currentDate);
     const creator:any = this.authService.getActiveUser().displayName;
     const owner:any = firebase.auth().currentUser.uid;
     console.log("type is"+value.type);
+    console.log("type is"+value.myDate);
+    console.log("type is"+value.fromDate);
+    //console.log("type is"+value.toDate);
+    console.log( value.toDate +"dasd");
     // this.groupService.addGroup(owner,creator,value.title,value.description,value.type,value.myDate,value.fromDate,value.toDate,value.members,value.target,
     // value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey)
     this.groupService.addGroup(owner,creator,value.title,value.description,value.type,value.myDate,value.fromDate,value.toDate,value.members,value.target,
-      value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey,value.role,value.modifiedDate)
+      value.photoUrl,value.videoUrl,value.mediaFiles,value.finalVideo,value.groupMatchKey,value.role,value.modifiedDate,value.place)
       .subscribe(
         () => {
 
@@ -411,7 +448,7 @@ reject(err);
       'uid':updatedNumber,
       'tel':updatedNumber,
       'displayName':name,
-      'photoURL':''
+      'photoUrl':''
     };
 
 
@@ -568,67 +605,6 @@ reject(err);
 
 
 
-
-
-  // memberGroup: MetaGroup[];
-  // constructor(public navCtrl: NavController, public navParams: NavParams,public popoverCtrl: PopoverController,private contacts: Contacts,private cnt: Contact , private mdl: ModalController,
-  //             private groupService: GroupsProvider,
-  // private authService: AuthProvider) {
-  // }
-  //
-  // ionViewDidLoad() {
-  //   console.log('ionViewDidLoad WhatsnewPage');
-  //   this.groupService.getGroups().subscribe(data => {
-  //     console.log('final ' + JSON.stringify(data));
-  //     this.memberGroup = data;
-  //     console.log('finally'+JSON.stringify(this.memberGroup));
-  //
-  //   });
-  // }
-  //
-  // ngOnInit(){
-  //   // this.groupService.getGroups().subscribe(data => {
-  //   //   console.log('final' + data);
-  //   //   this.memberGroup = data});
-  //
-  // }
-  //
-  // ionViewWillEnter(){
-  //   console.log('ion view will enter');
-  //   //this.listItems = this.groupService.getGroups();
-  //  // const token:any = this.authService.getActiveUser().getIdToken();
-  //   //this.memberGroup =
-  //
-  // this.groupService.getGroups().subscribe(data => {
-  //   console.log('final ' + JSON.stringify(data));
-  //    this.memberGroup = data;
-  //   console.log('finally'+JSON.stringify(this.memberGroup));
-  //
-  // });
-  //
-  //   // .subscribe(
-  //   //   (list :MetaGroup[]) =>
-  //   //   {
-  //   //     if(list){
-  //   //       this.memberGroup = list;
-  //   //     }else{
-  //   //       this.memberGroup = [];
-  //   //     }
-  //   //   },
-  //   //   error => {
-  //   //     console.log(error);
-  //   //   }
-  //   // );
-  //
-  // }
-  //
-  // onNewGroup(){
-  //   this.navCtrl.push(NewGroupPage,{mode: 'New'});
-  // }
-  //
-  // onLoadGroup(member: MetaGroup){
-  //   this.navCtrl.push(ExistingGroupPage,{member: member});
-  // }
 
 
   //fab

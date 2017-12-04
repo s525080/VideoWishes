@@ -39,6 +39,8 @@
         <ion-col>
           <!--<ion-badge *ngIf="member.value.type == 'Memories'" item-end>{{member.value.type}}</ion-badge>-->
           <ion-badge item-end>{{member.value.type}}</ion-badge>
+          <!--<ion-icon name="warning" class="ion-ios-heart"></ion-icon>-->
+          <ion-icon *ngIf="member.value.todate == minDate" name="warning" color="danger"></ion-icon>
         </ion-col>
 
       </ion-row>

@@ -1,4 +1,11 @@
 page-whatsnew {
+  .login-background{
+    background: no-repeat fixed center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    background-image: url(https://firebasestorage.googleapis.com/v0/b/vvish-new.appspot.com/o/images%2Foriginal.jpg?alt=media&token=8b4094f9-1126-4071-9b83-51f37af74c3a);
+  }
   ion-col {
     float: left;
   }

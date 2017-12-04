@@ -3,7 +3,7 @@
 <ion-tabs color="hcolor" >
     <ion-tab [root]="libraryPage"  tabTitle="Library" tabIcon="images"></ion-tab>
     <ion-tab [root]="whatsnew" tabTitle="Whats New" tabIcon="contacts"></ion-tab>
-    <ion-tab tabTitle="picnicCamera" (ionSelect)="openCamera()" tabIcon="camera" [enabled]="tabStateService.states.picnicCamera"></ion-tab>
+    <ion-tab tabTitle="Camera" (ionSelect)="openCamera()" tabIcon="camera" [enabled]="tabStateService.states.Camera"></ion-tab>
     <ion-tab [root]="whatshappening" tabTitle="Whats Happening" tabIcon="contacts"></ion-tab>
     <ion-tab [root]="calender" tabTitle="Calender" tabIcon="calendar"></ion-tab>
   </ion-tabs>

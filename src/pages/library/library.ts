@@ -8,6 +8,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 import {GroupsProvider} from "../../providers/groups/groups";
 import {TabStateServiceProvider} from "../../providers/tab-state-service/tab-state-service";
+import {MetaGroup} from "../../models/interfaces/metagroup";
 // import {StreamingMedia, StreamingVideoOptions} from "@ionic-native/streaming-media";
 
 
@@ -26,7 +27,10 @@ export class LibraryPage {
   library: any[];
   expand: any;
   myInput:any;
+  activeGroup:MetaGroup;
   information: any[];
+  currentDate = (new Date()).toString();
+  minDate = this.formatDate(this.currentDate);
   constructor(public navCtrl: NavController, private tabStateService: TabStateServiceProvider,
               private groupService: GroupsProvider,
               public navParams: NavParams,public popoverCtrl: PopoverController,
@@ -40,16 +44,28 @@ export class LibraryPage {
 
       let count = 0;
       for(let mem in data){
+        console.log(this.currentDate);
+        console.log(this.minDate);
+        console.log(data[mem].todate);
         if(data[mem].type == 'Memories'){
-          count++;
-          // this.activeGroup = data[mem];
+
+          let formattedTodate = this.formatDate(data[mem].todate);
+          console.log(formattedTodate);
+          if(this.minDate == formattedTodate){
+            count++;
+            if(count == 1){
+              this.activeGroup = data[mem];
+            }
+
+          }
           // this.groupId = mem;
           // console.log('groupId is '+mem);
         }
       }
       if(count == 1){
-        this.tabStateService.setState("picnicCamera",true);
+        this.tabStateService.setState("Camera",true);
       }
+
       console.log('count is'+count);
 
     });
@@ -60,6 +76,30 @@ export class LibraryPage {
     // })
   }
 
+
+
+
+
+  formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year,month, day].join('-');
+  }
+
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      refresher.complete();
+    }, 2000);
+  }
   ionViewDidLoad() {
     console.log('ionViewDidLoad LibraryPage');
   }

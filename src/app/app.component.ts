@@ -5,6 +5,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import {LoginPage} from "../pages/login/login";
 import firebase from 'firebase';
 import {TabsPage} from "../pages/tabs/tabs";
+import { Network } from '@ionic-native/network';
+import { AlertController } from 'ionic-angular';
 
 @Component({
   templateUrl: 'app.html'
@@ -18,7 +20,8 @@ export class MyApp {
   //private navCtrl: NavController;
   //@ViewChild('content') navCtrl: NavController;
   pages: Array<{title: string, component: any}>;
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,
+              private network: Network,public alertCtrl: AlertController) {
 
      // firebase.initializeApp({
      //   apiKey: "AIzaSyDn55Z3qS79NeL-lzzzMNXxEFLpj0Xss-Y",
@@ -64,12 +67,36 @@ if(user){
     }
 
      )
+
+
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
 
       statusBar.styleDefault();
       splashScreen.hide();
+
+
+      let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+        console.log('network was disconnected :-(');
+        let alert = this.alertCtrl.create({
+          title: 'Network was disconnected',
+          subTitle: 'Please check your connection. And try again',
+          buttons: ['OK']
+        });
+        alert.present();
+      });
+
+      // watch network for a connection
+      let connectSubscription = this.network.onConnect().subscribe(() => {
+        console.log('network connected!');
+        let alert = this.alertCtrl.create({
+          title: 'Network connected!',
+          subTitle: 'Hurrah!',
+          buttons: ['OK']
+        });
+        //alert.present();
+      });
 
     });
   }

@@ -6,7 +6,7 @@ export class MetaGroup{
               public type:string,public date:string,public fromdate:string,public todate:string,
               public contacts:MetaContact[],public target:Contact[],
               public photoUrl:string,public videoUrl:string,public mediaFiles:string[],public finalVideo:string,
-              public groupMatchKey:string,public role:string,public modifiedDate:string){
+              public groupMatchKey:string,public role:string,public modifiedDate:string,public place:string){
 
   }
 }

@@ -60,6 +60,8 @@ import {PhotoViewer} from "@ionic-native/photo-viewer";
 import {VideoPlayer} from "@ionic-native/video-player";
 import {PasswordresetPage} from "../pages/passwordreset/passwordreset";
 import { TabStateServiceProvider } from '../providers/tab-state-service/tab-state-service';
+import {AutocompletePage} from "../pages/autocomplete/autocomplete";
+import { Network } from '@ionic-native/network';
 
 
 @NgModule({
@@ -86,7 +88,8 @@ import { TabStateServiceProvider } from '../providers/tab-state-service/tab-stat
     FriendPipe,
     PersonalchatPage,
     GroupPipe,
-    PasswordresetPage
+    PasswordresetPage,
+    AutocompletePage
 
   ],
   imports: [
@@ -118,7 +121,8 @@ import { TabStateServiceProvider } from '../providers/tab-state-service/tab-stat
     EventModalPage,
     AddmemberPage,
     PersonalchatPage,
-    PasswordresetPage
+    PasswordresetPage,
+    AutocompletePage
   ],
   providers: [
     StatusBar,
@@ -149,7 +153,8 @@ import { TabStateServiceProvider } from '../providers/tab-state-service/tab-stat
     PhotoViewer,
     VideoPlayer,
     StreamingMedia,
-    TabStateServiceProvider
+    TabStateServiceProvider,
+    Network
   ]
 })
 export class AppModule {}

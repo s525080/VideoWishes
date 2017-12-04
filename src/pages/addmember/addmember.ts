@@ -41,19 +41,17 @@ export class AddmemberPage {
   ionViewDidLoad() {
   //this.searchFriend = '';
   this.contactlist = this.navParams.get('data');
+    this.contactlist.sort(function(a,b) {
+      if ( a.name.formatted < b.name.formatted )
+        return -1;
+      if ( a.name.formatted > b.name.formatted )
+        return 1;
+      return 0;
+    } );
+
     this.temparr = this.contactlist;
-  console.log(this.contactlist);
-    const newContactAlert = this.alertCtrl.create({
-      title: 'contact',
-      message : this.contactlist,
-      buttons : [
-        {
-          text : ' Cancel',
-          role : 'cancel'
-        }
-      ]
-    })
-     // newContactAlert.present();
+    console.log(this.contactlist);
+
 
   }
 
@@ -90,11 +88,24 @@ export class AddmemberPage {
         for(let member in this.finalContactList){
           console.log('member is'+member);
           console.log('member data is'+JSON.stringify(this.finalContactList[member]));
-console.log(' contact lis is'+this.contactlist+' tel one is'+telone+' tel two is'+teltwo);
-          var contactlist = (this.finalContactList[member].tel).replace(/[^\w]/gi, '');
-          var telone = (friend.phoneNumbers[0].value).replace(/[^\w]/gi, '');
-          var teltwo = (friend.phoneNumbers[1].value).replace(/[^\w]/gi, '');
+          console.log('start');
+          let telone;
+          let teltwo
+          let contactlist = (this.finalContactList[member].tel).replace(/[^\w]/gi, '');
+          console.log('contact list'+contactlist);
 
+          if(friend.phoneNumbers.length>0)
+          {
+             telone = (friend.phoneNumbers[0].value).replace(/[^\w]/gi, '');
+            console.log('contact list'+telone);
+          }
+          console.log('phone length is'+friend.phoneNumbers.length);
+          if(friend.phoneNumbers.length>1){
+             teltwo = (friend.phoneNumbers[1].value).replace(/[^\w]/gi, '');
+            console.log('contact list'+teltwo);
+          }
+
+          console.log(' contact lis is'+contactlist+' tel one is'+telone+' tel two is'+teltwo);
           if(contactlist== telone || contactlist == teltwo){
             (this.finalContactList).splice(parseInt(member));
             console.log('member removed');
@@ -125,7 +136,7 @@ console.log(' contact lis is'+this.contactlist+' tel one is'+telone+' tel two is
     //   }
     // }
 
-    console.log('friend is'+JSON.stringify(friend.name.formatted));
+        console.log('friend is'+JSON.stringify(friend.name.formatted));
         console.log('phone is'+JSON.stringify(friend.phoneNumbers));
         let cont:any =0;
         for(let num in friend.phoneNumbers){

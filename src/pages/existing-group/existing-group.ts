@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ActionSheetController, AlertController, LoadingController, NavController, NavParams} from 'ionic-angular';
+import {
+  ActionSheetController, AlertController, LoadingController, NavController, NavParams,
+  ToastController
+} from 'ionic-angular';
 import {MetaGroup} from "../../models/interfaces/metagroup";
 import {Camera} from "@ionic-native/camera";
 import {
@@ -49,12 +52,33 @@ export class ExistingGroupPage implements OnInit{
               public camera:Camera,private mediaCapture: MediaCapture,public alertCtrl:AlertController,
               public actionSheetCtrl: ActionSheetController,public filechooser: FileChooser,public http:Http,
               public userservice: UserProvider,public file:File,public groupservice:GroupsProvider,
-              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer,private streamingMedia: StreamingMedia) {
+              private photoViewer: PhotoViewer,private videoPlayer: VideoPlayer,private streamingMedia: StreamingMedia,
+              private toastCtrl:ToastController) {
 
 this.currentUser = firebase.auth().currentUser.uid;
 console.log("user is"+this.currentUser);
 
 
+  }
+
+  doRefresh(refresher) {
+    console.log('Begin async operation', refresher);
+    this.groupservice.getGroup(this.groupId).subscribe((res) => {
+      let member:MetaGroup = res;
+      console.log('Async operation has ended'+ JSON.stringify(member));
+      this.group.value.mediaFiles = member.mediaFiles;
+      this.group.value.videoUrl = member.videoUrl;
+      this.group.value.photoUrl = member.photoUrl;
+      this.medialist = [];
+         this.loadmedia();
+      refresher.complete();
+    });
+
+    // setTimeout(() => {
+    //
+    //
+    //
+    // }, 6000);
   }
 
   ngOnInit(){
@@ -77,11 +101,23 @@ console.log("user is"+this.currentUser);
 
 
   }
+
+  showLongToast(msg:string) {
+    let toast = this.toastCtrl.create({
+      message: msg,
+      duration: 3000,
+    });
+    toast.present();
+  }
+
   onphotoClick(src:string){
     console.log('src is'+src);
     this.photoViewer.show(src);
+
+
   }
   onvideoClick(src:string){
+    console.log('video is'+this.group.value.videoUrl);
     console.log('src is'+src);
     // this.videoPlayer.play(src).then(() => {
     //   console.log('video completed');
@@ -136,6 +172,33 @@ console.log("user is"+this.currentUser);
   }
 
   onDeleteGroup(){
+
+    let prompt = this.alertCtrl.create({
+      title: 'Deleting Group',
+      subTitle: "Are you sure?",
+      buttons: [
+        {
+          text: 'No',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Yes',
+          handler: data => {
+            console.log('Yes clicked');
+            this.groupservice.deletegroup(this.groupId,this.group.value.contacts,this.group.value.groupMatchKey).then(() => {
+              this.navCtrl.pop();
+            }).catch((err) => {
+              console.log(err);
+            })
+          }
+        }
+      ]
+    });
+    prompt.present();
+
+
 
   }
 
@@ -253,7 +316,9 @@ console.log("user is"+this.currentUser);
             let options = {
               sourceType: this.camera.PictureSourceType.CAMERA,
               mediaType: this.camera.MediaType.ALLMEDIA,
-              destinationType: this.camera.DestinationType.DATA_URL
+              destinationType: this.camera.DestinationType.DATA_URL,
+              saveToPhotoAlbum: true,
+              correctOrientation: true,
             }
             let loader = this.loadingCtrl.create({
               content: 'Please wait'
@@ -593,7 +658,9 @@ console.log("user is"+this.currentUser);
             let options = {
               sourceType: this.camera.PictureSourceType.CAMERA,
               mediaType: this.camera.MediaType.ALLMEDIA,
-              destinationType: this.camera.DestinationType.DATA_URL
+              destinationType: this.camera.DestinationType.DATA_URL,
+              saveToPhotoAlbum: true,
+              correctOrientation: true,
             }
             let loader = this.loadingCtrl.create({
               content: 'Please wait'
@@ -688,13 +755,14 @@ console.log("user is"+this.currentUser);
               const filename = Math.floor(Date.now() / 1000);
 
               // Create a reference to 'images/todays-date.jpg'
-
-              const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId);
+              // Create a reference to 'images/todays-date.jpg'
+              let UniqueKey = Math.floor(Math.random()*8+1)+Math.random().toString().slice(2,10);
+              const imageRef = storageRef.child(firebase.auth().currentUser.uid).child(this.groupId+"/"+UniqueKey);
 
 
               imageRef.putString(url, firebase.storage.StringFormat.DATA_URL).then((res: any)=> {
 
-                storageRef.child(firebase.auth().currentUser.uid).child(this.groupId).getDownloadURL().then((url) => {
+                imageRef.getDownloadURL().then((url) => {
                   let loader = this.loadingCtrl.create({
                     content: 'Please wait'
                   });

@@ -18,29 +18,36 @@
 </ion-header>
 
 
-<ion-content  >
+<ion-content class="login-background">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <ion-searchbar
     [(ngModel)]="myInput"
     [showCancelButton]="shouldShowCancel"
-    (ionInput)="onInput($event)"
+   (ionInput)="onInput($event)"
     (ionCancel)="onCancel($event)">
   </ion-searchbar>
   <ion-list class="accordion-list">
     <!-- First Level -->
     <ion-list-header *ngFor="let item of library; let i = index"  no-lines no-padding>
-      <ion-item>
+      <ion-item class="login-background">
         <ion-list-header no-lines no-padding>
           <ion-card-title>{{item.name}}</ion-card-title>
         </ion-list-header>
 
         <ion-slides  class="image-slider" loop="true" slidesPerView="2">
-          <ion-slide *ngFor="let item of item.children; let k = index">
-            <img src="assets/images/thumb.png" class="thumb-img" />
-          </ion-slide>
+          <ion-slide *ngFor="let item of item.children; let k = index" >
+            <!--<img src="assets/images/thumb.png" class="thumb-img" />-->
+            <img src="https://firebasestorage.googleapis.com/v0/b/vvish-new.appspot.com/o/images%2Fvideo-placeholder.png?alt=media&token=bb0025b2-e4e1-4533-9f94-d7d5bdfb6e12" class="thumb-img" />
+            <!--<ion-icon name="play" style="zoom:4.0;"></ion-icon>-->
+           </ion-slide>
         </ion-slides>
 
       </ion-item>
+
     </ion-list-header>
+
   </ion-list>
 
 
